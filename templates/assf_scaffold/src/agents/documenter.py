@@ -1,5 +1,5 @@
 from agno.agent import Agent
-from agno.tools.file import FileTools
+from assf_core.tools.workspace_tools import WorkspaceTools # type: ignore[import-not-found]
 from pydantic import BaseModel
 
 from assf_core.config import get_models_for_tier
@@ -28,7 +28,7 @@ def get_documenter_agent(
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description="You are a Technical Writer. You synthesize work into documentation.",
         instructions=task_instructions,
-        tools=[FileTools(enable_read_file=True, enable_save_file=True)],
+        tools=[WorkspaceTools(restrict_to_cwd=True)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
     )

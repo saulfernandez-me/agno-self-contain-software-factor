@@ -1,6 +1,6 @@
 from agno.agent import Agent
 from agno.tools.duckduckgo import DuckDuckGoTools
-from agno.tools.file import FileTools
+from assf_core.tools.workspace_tools import WorkspaceTools # type: ignore[import-not-found]
 from pydantic import BaseModel
 
 from assf_core.config import get_models_for_tier
@@ -30,7 +30,7 @@ def get_scout_agent(
         description="You are an Information Miner. You gather context and verify facts.",
         instructions=task_instructions,
         tools=[
-            FileTools(enable_read_file=True, enable_save_file=False),
+            WorkspaceTools(restrict_to_cwd=True),
             DuckDuckGoTools(),
         ],
         output_schema=output_schema,  # type: ignore[call-arg]
