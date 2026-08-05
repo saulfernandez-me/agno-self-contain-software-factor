@@ -28,7 +28,7 @@ The lifecycle of an ASSF phase follows a strict steel rail pipeline:
              └────────┬────────────────────────────────┬────────┘
                       │                                │
      ┌────────────────▼────────────────┐      ┌────────▼────────┐
-     │ FASE AGENTE (Cognición Bounded) │      │   FASE CÓDIGO   │
+     │  AGENT PHASE (Bounded Cognition)│      │    CODE PHASE   │
      └────────────────┬────────────────┘      │ (Linter/Tests)  │
                       │                       └────────┬────────┘
              ┌────────▼────────┐                       │
@@ -40,13 +40,13 @@ The lifecycle of an ASSF phase follows a strict steel rail pipeline:
              └────────┬────────┘
                       │
             ┌─────────┴─────────┐
-            │   ¿Pasa Gates?    │
+            │    Pass Gates?    │
             └────┬──────────┬───┘
                  │          │
-              Sí │       No │ (Re-prompt In-Session)
+             Yes │       No │ (Re-prompt In-Session)
                  │          └───────────┐
         ┌────────▼────────┐       ┌─────▼─────────────┐
-        │ SIGUIENTE FASE  │       │ CORRECTION LOOP   │
+        │   NEXT PHASE    │       │  CORRECTION LOOP  │
         └─────────────────┘       └───────────────────┘
 ```
 
@@ -59,7 +59,8 @@ agno-self-contain-software-factor/
 ├── README.md                           # This file
 ├── docs/                               # Conceptual documentation
 │   ├── ARCHITECTURE.md                 # Technical design and pillars
-│   └── FEATURES.md                     # Roadmap and specifications
+│   ├── FEATURES.md                     # Roadmap and specifications
+│   └── ORIGINS.md                      # Design lineage and SSSF origins
 ├── assf/                               # Source code (coming soon)
 │   ├── core/                           # Factory engines, base workflow and envelopes
 │   ├── agents/                         # Custom Agno agents with bounded roles
@@ -67,6 +68,15 @@ agno-self-contain-software-factor/
 │   └── cli.py                          # Factory entrypoint CLI
 └── tests/                              # Unit and integration tests
 ```
+
+---
+
+## 🧬 Origins & Lineage
+
+The core ideas behind **ASSF** are deeply rooted in our previous engineering work building meta-frameworks for AI workflow design, as well as the pioneering concepts of **Dan Disler's (IndyDevDan) Super Simple Software Factory (SSSF)**.
+
+For a full technical history, conceptual alignment, and list of inspirations, please read:
+👉 **[docs/ORIGINS.md](docs/ORIGINS.md)**
 
 ---
 

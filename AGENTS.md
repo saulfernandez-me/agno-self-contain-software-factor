@@ -4,7 +4,7 @@ This repository is **Agno Self-Contain Software Factor (ASSF)**, a rigid and det
 
 ---
 
-## 🌐 1. Language Rule: Strict English Boundary (INNEGOCIABLE 🚦)
+## 🌐 1. Language Rule: Strict English Boundary (NON-NEGOTIABLE 🚦)
 
 To ensure this software factory is enterprise-ready, maintainable, and aligned with international open-source standards, we enforce a strict language protocol:
 
@@ -23,7 +23,7 @@ Every agent operating within this repository must strictly adhere to the five co
 1.  **Graph Sovereignty**:
     *   Never let an agent decide its own routing or choose the next file to process in a freeform loop.
     *   The orchestration graph is defined in deterministic Python (`AssfWorkflow` subclassing `Workflow`).
-    *   Agents are esclave cognitive nodes invoked strictly inside Python methods.
+    *   Agents are subordinate cognitive nodes invoked strictly inside Python methods.
 
 2.  **Explicit Execution Lanes**:
     *   Never mix CPU-deterministic logic with LLM cognition.
