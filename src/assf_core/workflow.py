@@ -57,12 +57,20 @@ class AssfWorkflow(Workflow):
 
     def run_agent(self, agent: Any, prompt: str) -> Any:
         """
-        Executes an agent and extracts its structured output.
-        Implements a robust fallback mechanism that catches ALL model-related errors
-        (including 404s, Auth errors, etc.) and tries the next model in the fallback pool.
+        Executes an agent with the Universal Two-Step Harness (Envelope Wrapper).
+        Step 1: The agent executes cognitively without Pydantic constraints, avoiding tool-call hallucinations.
+        Step 2: A FormatterAgent extracts the execution logs into the strict Pydantic Envelope.
         """
         from agno.models.utils import get_model
+        from agno.agent import Agent
         from pydantic import BaseModel
+        from assf_core.config import get_models_for_tier
+
+        # Extract the expected schema from the agent's initialization
+        expected_schema = getattr(agent, "output_schema", None)
+        
+        # Temporarily strip the structured output constraint from the cognitive agent
+        agent.output_schema = None
 
         # Collect all models to try (primary + fallbacks)
         models_to_try = [agent.model]
@@ -76,29 +84,55 @@ class AssfWorkflow(Workflow):
                 agent.model = get_model(model) if isinstance(model, str) else model
 
                 print(
-                    f"[ASSF] Attempting execution with model: {getattr(agent.model, 'id', getattr(agent.model, 'name', str(model)))}"
+                    f"[ASSF] Cognitive Phase: Running {agent.name} with model {getattr(agent.model, 'id', getattr(agent.model, 'name', str(model)))}..."
                 )
-                response = agent.run(prompt)
+                
+                # STEP 1: Cognitive Execution (Free-form text, safe tool usage)
+                cognitive_response = agent.run(prompt)
+                cognitive_content = getattr(cognitive_response, "content", str(cognitive_response))
+                
+                # If no schema was expected, just return the raw text
+                if not expected_schema:
+                    agent.output_schema = expected_schema  # Restore
+                    return cognitive_content
+                
+                # STEP 2: Formatting Execution (Envelope Wrapper)
+                formatter_models = get_models_for_tier("lightweight")
+                formatter_model = get_model(formatter_models[0])
+                
+                print(f"[ASSF] Formatting Phase: Extracting Envelope via {getattr(formatter_model, 'id', str(formatter_model))}...")
+                formatter = Agent(
+                    name="Formatter",
+                    model=formatter_model,
+                    description="You are a strict data formatter. Your only job is to extract the required fields into the JSON schema.",
+                    instructions=f"Analyze the following execution log. Extract the precise status, summary, and artifacts touched. If the execution failed or encountered errors, set status to 'fail'.\n\n[EXECUTION LOG]\n{cognitive_content}",
+                    output_schema=expected_schema,
+                )
+                
+                formatter_response = formatter.run("Format the execution output into the required JSON envelope.")
 
-                # Agno 2.8.7 structured output extraction
+                # Extract Structured Output
                 output = None
-                if hasattr(response, "data") and response.data is not None:
-                    output = response.data
-                elif hasattr(response, "content") and isinstance(
-                    response.content, BaseModel
+                if hasattr(formatter_response, "data") and formatter_response.data is not None:
+                    output = formatter_response.data
+                elif hasattr(formatter_response, "content") and isinstance(
+                    formatter_response.content, BaseModel
                 ):
-                    output = response.content
+                    output = formatter_response.content
 
                 if output is not None:
+                    agent.output_schema = expected_schema  # Restore
                     return output
 
-                last_error = f"Model {getattr(agent.model, 'id', str(agent.model))} failed to generate valid structured Pydantic data. Raw content: {getattr(response, 'content', 'None')}"
-                print(f"[ASSF] Warning: {last_error} Falling back...")
+                last_error = f"Formatter failed to generate valid structured Pydantic data. Raw content: {getattr(formatter_response, 'content', 'None')}"
+                print(f"[ASSF] Warning: {last_error} Falling back to next cognitive model...")
 
             except Exception as e:
                 last_error = str(e)
                 print(
                     f"[ASSF] Warning: Model {getattr(agent.model, 'id', getattr(agent.model, 'name', str(model)))} raised exception: {last_error}. Falling back..."
                 )
-
+        
+        # Ensure we restore the agent's schema even if it fails completely
+        agent.output_schema = expected_schema
         raise RuntimeError(f"All agent models failed. Last error: {last_error}")
