@@ -71,15 +71,15 @@ class WorkspaceTools(Toolkit):
         _walk(target, 1)
         return "\n".join(tree_lines)
 
-    def read_file_snippet(self, path: str, start_line: int, end_line: int) -> str:
+    def read_file_snippet(self, path: str, start_line: int = 1, end_line: int = 1000) -> str:
         """
         Reads a specific range of lines from a file.
         Use this instead of reading the entire file to save context window tokens.
 
         Args:
             path: The file path.
-            start_line: Line number to start reading from (1-indexed).
-            end_line: Line number to end reading at (inclusive).
+            start_line: Line number to start reading from (1-indexed). Defaults to 1.
+            end_line: Line number to end reading at (inclusive). Defaults to 1000.
 
         Returns:
             The requested lines of code.
