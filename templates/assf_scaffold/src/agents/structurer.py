@@ -6,7 +6,7 @@ def get_structurer_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "google:gemini-1.5-flash",
+    model_tier: str = "workhorse",
 ) -> Agent:
     """
     Factory for the Structurer Agent (The Data Taxonomist).
@@ -21,7 +21,7 @@ def get_structurer_agent(
 
     return Agent(
         name="Structurer",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are a Data Taxonomist. You clean and map unstructured data.",
         instructions=task_instructions,
         tools=[],  # Data mapping is typically an input-output operation in memory

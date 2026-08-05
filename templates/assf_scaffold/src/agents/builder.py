@@ -10,7 +10,7 @@ def get_builder_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "openai:gpt-4o",  # Default, ideally injected from yaml
+    model_tier: str = "heavy",  # Default, ideally injected from yaml
 ) -> Agent:
     """
     Factory for the Builder Agent (The Execution Worker).
@@ -25,7 +25,7 @@ def get_builder_agent(
 
     return Agent(
         name="Builder",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are the Execution Worker. You strictly implement plans and write code to disk.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=True)],

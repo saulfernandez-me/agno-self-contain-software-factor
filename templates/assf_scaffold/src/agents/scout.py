@@ -8,7 +8,7 @@ def get_scout_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "google:gemini-1.5-flash",
+    model_tier: str = "lightweight",
 ) -> Agent:
     """
     Factory for the Scout Agent (The Information Miner).
@@ -23,7 +23,7 @@ def get_scout_agent(
 
     return Agent(
         name="Scout",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are an Information Miner. You gather context and verify facts.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=False), DuckDuckGoTools()],
