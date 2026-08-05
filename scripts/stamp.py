@@ -24,6 +24,7 @@ import urllib.request
 from pathlib import Path
 
 from agno.agent import Agent
+from agno.models.utils import get_model
 from pydantic import BaseModel, Field
 from rich.console import Console
 from rich.prompt import Prompt
@@ -100,6 +101,7 @@ Here is the template for AI.md you MUST follow:
 Output the content matching the Pydantic schema perfectly.
 """,
         output_schema=InceptionOutput,  # type: ignore[call-arg]
+        model=get_model("google:gemini-1.5-flash"),
     )
 
     if is_brownfield:
