@@ -1,0 +1,9 @@
+graph TD
+    subgraph "LANE: agent"
+        BUILD["builder: Implement Code"]:::agent
+    end
+    subgraph "LANE: code"
+        TEST["run_shell_command: pytest"]:::code
+    end
+    BUILD --> TEST
+    TEST -.->|Fail| BUILD

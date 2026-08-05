@@ -1,0 +1,6 @@
+graph TD
+    subgraph "LANE: code"
+        LINT["run_shell_command: ruff check"]:::code
+        TEST["run_shell_command: pytest"]:::code
+    end
+    LINT --> TEST

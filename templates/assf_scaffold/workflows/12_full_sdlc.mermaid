@@ -1,0 +1,16 @@
+graph TD
+    subgraph "LANE: agent"
+        PLAN["planner: Plan"]:::agent
+        BUILD["builder: Code"]:::agent
+        REVIEW["reviewer: Audit"]:::agent
+        DOC["documenter: Docs"]:::agent
+    end
+    subgraph "LANE: code"
+        TEST["run_shell_command: pytest"]:::code
+    end
+    PLAN --> BUILD
+    BUILD --> TEST
+    TEST -.->|Fail| BUILD
+    TEST --> REVIEW
+    REVIEW -.->|Rejects| BUILD
+    REVIEW --> DOC

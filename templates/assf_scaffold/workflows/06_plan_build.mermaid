@@ -1,0 +1,6 @@
+graph TD
+    subgraph "LANE: agent"
+        PLAN["planner: Create Plan"]:::agent
+        BUILD["builder: Implement Code"]:::agent
+    end
+    PLAN --> BUILD
