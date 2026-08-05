@@ -24,7 +24,7 @@ class AssfConfig(BaseModel):
     limits: LimitsConfig = Field(default_factory=LimitsConfig)
 
 
-def load_assf_config(config_path: str = ".context/assf.yaml") -> AssfConfig:
+def load_assf_config(config_path: str = "assf.yaml") -> AssfConfig:
     """
     Loads and parses the ASSF configuration YAML file.
     Returns a strongly typed Pydantic AssfConfig object.
