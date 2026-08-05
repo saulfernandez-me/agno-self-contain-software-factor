@@ -3,6 +3,8 @@ from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.tools.file import FileTools
 from pydantic import BaseModel
 
+from assf_core.config import get_models_for_tier
+
 
 def get_scout_agent(
     domain_context: str,
@@ -23,10 +25,14 @@ def get_scout_agent(
 
     return Agent(
         name="Scout",
-        model=model_tier,  # type: ignore[arg-type]
+        model=get_models_for_tier(model_tier)[0],
+        fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description="You are an Information Miner. You gather context and verify facts.",
         instructions=task_instructions,
-        tools=[FileTools(enable_read_file=True, enable_save_file=False), DuckDuckGoTools()],
+        tools=[
+            FileTools(enable_read_file=True, enable_save_file=False),
+            DuckDuckGoTools(),
+        ],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
     )

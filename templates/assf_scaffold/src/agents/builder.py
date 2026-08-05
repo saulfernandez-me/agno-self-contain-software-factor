@@ -5,6 +5,8 @@ from agno.agent import Agent
 from agno.tools.file import FileTools
 from pydantic import BaseModel
 
+from assf_core.config import get_models_for_tier
+
 
 def get_builder_agent(
     domain_context: str,
@@ -25,7 +27,8 @@ def get_builder_agent(
 
     return Agent(
         name="Builder",
-        model=model_tier,  # type: ignore[arg-type]
+        model=get_models_for_tier(model_tier)[0],
+        fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description="You are the Execution Worker. You strictly implement plans and write code to disk.",
         instructions=task_instructions,
         tools=[FileTools(enable_read_file=True, enable_save_file=True)],

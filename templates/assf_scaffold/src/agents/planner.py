@@ -1,6 +1,8 @@
 from agno.agent import Agent
 from pydantic import BaseModel
 
+from assf_core.config import get_models_for_tier
+
 
 def get_planner_agent(
     domain_context: str,
@@ -21,7 +23,8 @@ def get_planner_agent(
 
     return Agent(
         name="Planner",
-        model=model_tier,  # type: ignore[arg-type]
+        model=get_models_for_tier(model_tier)[0],
+        fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description="You are a Strategic Orchestrator. You decompose requests into actionable steps.",
         instructions=task_instructions,
         tools=[],  # Planners plan, they do not touch files.
