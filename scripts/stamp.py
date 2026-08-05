@@ -6,6 +6,8 @@
 #     "pydantic>=2.13.4",
 #     "rich>=15.0.0",
 #     "pyyaml>=6.0.1",
+#     "google-genai>=0.2.0",
+#     "openai>=1.0.0",
 # ]
 # ///
 
@@ -138,6 +140,9 @@ Output the content matching the Pydantic schema perfectly.
     console.print("[cyan]⏳ Generating identity files...[/cyan]")
     try:
         response = agent.run(prompt)
+        if not hasattr(response, 'data') or response.data is None:
+            raise ValueError(f"Agent failed to generate structured data. Content: {getattr(response, 'content', 'None')}")
+            
         output: InceptionOutput = response.data  # type: ignore
 
         # Write AI.md
@@ -149,7 +154,7 @@ Output the content matching the Pydantic schema perfectly.
         if not existing_catalog.exists():
             existing_catalog.write_text(output.catalog_info_content, encoding="utf-8")
             console.print(f"[green]✓ Wrote {existing_catalog}[/green]")
-    except OSError as e:
+    except (OSError, ValueError, AttributeError) as e:
         console.print(f"[red]❌ Inception Engine failed to generate files: {e}[/red]")
         console.print(
             "[yellow]Please create AI.md and catalog-info.yaml manually.[/yellow]"

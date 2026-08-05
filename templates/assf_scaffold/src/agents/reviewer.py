@@ -25,7 +25,7 @@ def get_reviewer_agent(
         model=model_tier,  # type: ignore[arg-type]
         description="You are an Adversarial Auditor. You review code and look for flaws.",
         instructions=task_instructions,
-        tools=[FileTools(read_access=True, write_access=False)],
+        tools=[FileTools(enable_read_file=True, enable_save_file=False)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
     )
