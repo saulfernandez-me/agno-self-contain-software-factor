@@ -61,7 +61,7 @@ This will inject the **Scaffold** into the target repository:
 lmdi-backend/ (Target Repo)
 ├── src/                        # The project's actual code
 ├── tests/                      # The project's tests
-├── .assf/                      # The stamped ASSF Factory
+├── .context/                      # The stamped ASSF Factory
 │   ├── workflows/              # e.g., build_and_test.py, research_feature.py
 │   ├── agents/                 # The Agno agents tailored for this repo
 │   ├── gates/                  # The specific acceptance criteria for this repo
@@ -73,8 +73,8 @@ lmdi-backend/ (Target Repo)
 
 ### The Execution Flow in the Target Repo
 
-1.  **Invocation**: The developer (or a CI pipeline) triggers a workflow: `uv run .assf/workflows/build_and_test.py "Add a new API endpoint for user login"`.
+1.  **Invocation**: The developer (or a CI pipeline) triggers a workflow: `uv run .context/workflows/build_and_test.py "Add a new API endpoint for user login"`.
 2.  **Lane 1 (Agent)**: The workflow instantiates the Builder Agent, passes the prompt, and gets a `BuildEnvelope` JSON back.
 3.  **Lane 2 (Code)**: The workflow runs the local gates (e.g., `ruff check`, `pytest`).
 4.  **Correction Loop**: If tests fail, the workflow re-prompts the Builder Agent in the same session with the stderr output.
-5.  **Completion**: The final output is written, and telemetry is saved in `.assf/data/telemetry.db`.
+5.  **Completion**: The final output is written, and telemetry is saved in `.context/data/telemetry.db`.
