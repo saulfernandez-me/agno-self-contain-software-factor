@@ -1,6 +1,8 @@
 from agno.agent import Agent
 from pydantic import BaseModel
 
+from assf_core.config import get_models_for_tier
+
 
 def get_structurer_agent(
     domain_context: str,
@@ -21,7 +23,8 @@ def get_structurer_agent(
 
     return Agent(
         name="Structurer",
-        model=model_tier,  # type: ignore[arg-type]
+        model=get_models_for_tier(model_tier)[0],
+        fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description="You are a Data Taxonomist. You clean and map unstructured data.",
         instructions=task_instructions,
         tools=[],  # Data mapping is typically an input-output operation in memory
