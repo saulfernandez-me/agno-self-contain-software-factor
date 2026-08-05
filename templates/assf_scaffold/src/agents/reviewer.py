@@ -31,4 +31,5 @@ def get_reviewer_agent(
         tools=[WorkspaceTools(restrict_to_cwd=True)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
+        tool_call_limit=5,
     )
