@@ -46,25 +46,27 @@ from assf_core.workflow import AssfWorkflow
 from assf_core.assert_gates import run_shell_command
 from src.agents.builder import get_builder_agent
 
+
 def run_feature_workflow(task_description: str):
     workflow = AssfWorkflow(name="feature_implementation")
     builder = get_builder_agent()
-    
+
     # 1. Agent Lane: Cognition
     with workflow.lane("agent"):
         response = builder.run(task_description)
-        envelope = response.data # This is the Pydantic Envelope
-        
+        envelope = response.data  # This is the Pydantic Envelope
+
     # 2. Code Lane: Verification Gate
     with workflow.lane("code"):
         success, stdout, stderr = run_shell_command("uv run pytest")
-        
+
     # 3. Correction Loop
     if not success:
         with workflow.lane("agent"):
             # Re-prompt in the same session
             correction_prompt = f"Tests failed. Please fix:\n{stderr}"
             builder.run(correction_prompt)
+
 
 if __name__ == "__main__":
     run_feature_workflow("Implement user login API")

@@ -21,7 +21,7 @@ def get_structurer_agent(
 
     return Agent(
         name="Structurer",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are a Data Taxonomist. You clean and map unstructured data.",
         instructions=task_instructions,
         tools=[],  # Data mapping is typically an input-output operation in memory

@@ -22,7 +22,7 @@ def get_documenter_agent(
 
     return Agent(
         name="Documenter",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are a Technical Writer. You synthesize work into documentation.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=True)],

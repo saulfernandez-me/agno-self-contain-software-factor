@@ -25,7 +25,7 @@ def get_builder_agent(
 
     return Agent(
         name="Builder",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are the Execution Worker. You strictly implement plans and write code to disk.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=True)],
