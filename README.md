@@ -28,7 +28,7 @@ The lifecycle of an ASSF phase follows a strict steel rail pipeline:
              └────────┬────────────────────────────────┬────────┘
                       │                                │
      ┌────────────────▼────────────────┐      ┌────────▼────────┐
-     │ FASE AGENTE (Cognición Bounded) │      │   FASE CÓDIGO   │
+     │  AGENT PHASE (Bounded Cognition)│      │    CODE PHASE   │
      └────────────────┬────────────────┘      │ (Linter/Tests)  │
                       │                       └────────┬────────┘
              ┌────────▼────────┐                       │
@@ -40,13 +40,13 @@ The lifecycle of an ASSF phase follows a strict steel rail pipeline:
              └────────┬────────┘
                       │
             ┌─────────┴─────────┐
-            │   ¿Pasa Gates?    │
+            │    Pass Gates?    │
             └────┬──────────┬───┘
                  │          │
-              Sí │       No │ (Re-prompt In-Session)
+             Yes │       No │ (Re-prompt In-Session)
                  │          └───────────┐
         ┌────────▼────────┐       ┌─────▼─────────────┐
-        │ SIGUIENTE FASE  │       │ CORRECTION LOOP   │
+        │   NEXT PHASE    │       │  CORRECTION LOOP  │
         └─────────────────┘       └───────────────────┘
 ```
 
