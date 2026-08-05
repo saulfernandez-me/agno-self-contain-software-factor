@@ -6,7 +6,7 @@ from pydantic import BaseModel
 def get_reviewer_agent(
     domain_context: str,
     task_instructions: str,
-    response_model: type[BaseModel],
+    output_schema: type[BaseModel],
     model_tier: str = "heavy",
 ) -> Agent:
     """
@@ -26,6 +26,6 @@ def get_reviewer_agent(
         description="You are an Adversarial Auditor. You review code and look for flaws.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=False)],
-        response_model=response_model,  # type: ignore[call-arg]
-        add_history_to_messages=True,  # type: ignore[call-arg]
+        output_schema=output_schema,  # type: ignore[call-arg]
+        add_history_to_context=True,  # type: ignore[call-arg]
     )

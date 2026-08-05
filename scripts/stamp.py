@@ -97,10 +97,7 @@ Here is the template for AI.md you MUST follow:
 
 Output the content matching the Pydantic schema perfectly.
 """,
-        response_model=InceptionOutput, # type: ignore[call-arg]
-        # Using a fast/cheap model for inception logic (assuming the user has OPENAI_API_KEY or similar in env)
-        # We fallback to a prompt if no keys are found, but Agno expects a model.
-        # We'll use the default which usually defaults to OpenAI if key exists.
+        output_schema=InceptionOutput,  # type: ignore[call-arg]
     )
 
     if is_brownfield:

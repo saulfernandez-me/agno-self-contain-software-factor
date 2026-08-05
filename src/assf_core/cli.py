@@ -143,7 +143,7 @@ class {class_name}Envelope(EnvelopeBase):
 def get_{name.lower()}_agent(
     domain_context: str,
     task_instructions: str,
-    response_model: Type[BaseModel] = {class_name}Envelope,
+    output_schema: Type[BaseModel] = {class_name}Envelope,
     model_tier: str = "workhorse",
 ) -> Agent:
     \"\"\"
@@ -161,8 +161,8 @@ def get_{name.lower()}_agent(
         description="You are a {class_name}. TODO: Add description.",
         instructions=f"[DOMAIN CONTEXT]\\n{{domain_context}}\\n\\n[TASK]\\n{{task_instructions}}",
         tools=[],  # TODO: Add specific tools
-        response_model=response_model,  # type: ignore[call-arg]
-        add_history_to_messages=True,  # type: ignore[call-arg]
+        output_schema=output_schema,  # type: ignore[call-arg]
+        add_history_to_context=True,  # type: ignore[call-arg]
     )
 """
 
