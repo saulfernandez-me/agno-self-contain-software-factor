@@ -81,7 +81,7 @@ def generate_workflow(
     with workflow.lane("agent"):
         print("Running {a}...")
         {a}_response = {a}.run("Execute {a} tasks.")
-        {a}_envelope = {a}_response.content
+        {a}_envelope = {a}_response.data
 """
 
     runner_content = f"""from assf_core.workflow import AssfWorkflow  # type: ignore[import-not-found]
