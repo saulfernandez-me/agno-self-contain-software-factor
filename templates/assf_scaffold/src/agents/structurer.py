@@ -30,4 +30,5 @@ def get_structurer_agent(
         tools=[],  # Data mapping is typically an input-output operation in memory
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
+        tool_call_limit=5,
     )

@@ -35,4 +35,5 @@ def get_scout_agent(
         ],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
+        tool_call_limit=5,
     )

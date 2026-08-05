@@ -16,6 +16,7 @@ class DomainConfig(BaseModel):
 
 class LimitsConfig(BaseModel):
     correction_loop_max_attempts: int = 3
+    inner_tool_call_limit: int = 5
 
 
 class AssfConfig(BaseModel):
