@@ -5,7 +5,7 @@ from pydantic import BaseModel
 def get_planner_agent(
     domain_context: str,
     task_instructions: str,
-    response_model: type[BaseModel],
+    output_schema: type[BaseModel],
     model_tier: str = "heavy",
 ) -> Agent:
     """
@@ -25,6 +25,6 @@ def get_planner_agent(
         description="You are a Strategic Orchestrator. You decompose requests into actionable steps.",
         instructions=task_instructions,
         tools=[],  # Planners plan, they do not touch files.
-        response_model=response_model,  # type: ignore[call-arg]
-        add_history_to_messages=True,  # type: ignore[call-arg]
+        output_schema=output_schema,  # type: ignore[call-arg]
+        add_history_to_context=True,  # type: ignore[call-arg]
     )

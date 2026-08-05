@@ -5,7 +5,7 @@ from pydantic import BaseModel
 def get_structurer_agent(
     domain_context: str,
     task_instructions: str,
-    response_model: type[BaseModel],
+    output_schema: type[BaseModel],
     model_tier: str = "workhorse",
 ) -> Agent:
     """
@@ -25,6 +25,6 @@ def get_structurer_agent(
         description="You are a Data Taxonomist. You clean and map unstructured data.",
         instructions=task_instructions,
         tools=[],  # Data mapping is typically an input-output operation in memory
-        response_model=response_model,  # type: ignore[call-arg]
-        add_history_to_messages=True,  # type: ignore[call-arg]
+        output_schema=output_schema,  # type: ignore[call-arg]
+        add_history_to_context=True,  # type: ignore[call-arg]
     )
