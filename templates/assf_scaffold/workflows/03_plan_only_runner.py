@@ -8,4 +8,4 @@ def run(task: str, domain: str):
     wf = AssfWorkflow(name="03_plan_only")
     planner = get_planner_agent(domain, task, EnvelopeBase)
     with wf.lane("agent"):
-        planner.run(task)
+        wf.run_agent(planner, task)

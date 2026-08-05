@@ -8,4 +8,4 @@ def run(task: str, domain: str):
     wf = AssfWorkflow(name="04_build_only")
     builder = get_builder_agent(domain, task, EnvelopeBase)
     with wf.lane("agent"):
-        builder.run(task)
+        wf.run_agent(builder, task)

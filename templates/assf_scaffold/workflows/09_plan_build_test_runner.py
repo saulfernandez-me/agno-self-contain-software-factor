@@ -12,8 +12,8 @@ def run(task: str, domain: str):
     builder = get_builder_agent(domain, "Implement", EnvelopeBase)
 
     with wf.lane("agent"):
-        plan = planner.run(task)
-        builder.run(plan.data.summary)
+        plan = wf.run_agent(planner, task)
+        wf.run_agent(builder, plan.summary)
 
     for _ in range(3):
         with wf.lane("code"):
@@ -21,4 +21,4 @@ def run(task: str, domain: str):
         if ok:
             break
         with wf.lane("agent"):
-            builder.run(err)
+            wf.run_agent(builder, err)

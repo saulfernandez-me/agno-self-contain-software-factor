@@ -16,22 +16,22 @@ def run(task: str, domain: str):
     doc = get_documenter_agent(domain, "Document", EnvelopeBase)
 
     with wf.lane("agent"):
-        plan = planner.run(task)
+        plan = wf.run_agent(planner, task)
 
     for _ in range(3):
         with wf.lane("agent"):
-            builder.run(plan.data.summary)
+            wf.run_agent(builder, plan.summary)
         with wf.lane("code"):
             ok, _, err = run_shell_command("pytest")
         if not ok:
-            plan.data.summary = f"Fix tests: {err}"
+            plan.summary = f"Fix tests: {err}"
             continue
 
         with wf.lane("agent"):
-            rev = reviewer.run("Audit")
-        if rev.data.status == "success":
+            rev = wf.run_agent(reviewer, "Audit")
+        if rev.status == "success":
             break
-        plan.data.summary = f"Fix review: {rev.data.notes_for_next_agent}"
+        plan.summary = f"Fix review: {rev.notes_for_next_agent}"
 
     with wf.lane("agent"):
-        doc.run("Write PR based on changes")
+        wf.run_agent(doc, "Write PR based on changes")

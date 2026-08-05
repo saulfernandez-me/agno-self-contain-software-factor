@@ -11,5 +11,5 @@ def run(task: str, domain: str):
     builder = get_builder_agent(domain, "Implement plan", EnvelopeBase)
 
     with wf.lane("agent"):
-        res = planner.run(task)
-        builder.run(f"Plan: {res.data.summary}")
+        res = wf.run_agent(planner, task)
+        wf.run_agent(builder, f"Plan: {res.data.summary}")
