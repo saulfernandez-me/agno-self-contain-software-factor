@@ -16,7 +16,7 @@ A specialized extension of Agno's standard `Workflow` that enforces SSSF-style d
 Strict serialization of input/output boundaries:
 *   **`EnvelopeBase` Class**: The standardized data transfer object (DTO) that every cognitive node must output.
 *   **Automated Validation**: Integrates directly with Agno's `response_format` or structured outputs to guarantee that the LLM payload conforms to the required Pydantic schema.
-*   **Payload Persistence**: Automatically saves envelopes in `.assf/runs/<run_id>/envelopes/<phase_id>.json` for auditing and reproducibility.
+*   **Payload Persistence**: Automatically saves envelopes in `.context/runs/<run_id>/envelopes/<phase_id>.json` for auditing and reproducibility.
 
 ### 3. Verification Gates
 A modular library of assertion checkers:
@@ -65,7 +65,7 @@ A feedback mechanism for failed gates:
 
 ### Phase 2: Orchestration Core
 *   [ ] Implement `AssfWorkflow` and lane context managers.
-*   [ ] Build the file-system state tracker (`.assf/`).
+*   [ ] Build the file-system state tracker (`.context/`).
 *   [ ] Design the async correction-loop machinery.
 
 ### Phase 3: Developer Agents & CLI

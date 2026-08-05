@@ -50,7 +50,7 @@ Instead of forcing engineers to modify complex Python files to change a pipeline
 3.  **The Benefit**: Changing the workflow order or injecting a new validation gate is as simple as adding a line to the Mermaid text.
 
 ### Pattern B: Code-to-Graph (Interactive Trace)
-When a workflow runs, the `AssfWorkflow` tracer writes a live Mermaid trace file (`.assf/runs/<run_id>/trace.mermaid`) reflecting:
+When a workflow runs, the `AssfWorkflow` tracer writes a live Mermaid trace file (`.context/runs/<run_id>/trace.mermaid`) reflecting:
 *   **Green Nodos**: Completed phases.
 *   **Yellow Nodos**: Active running phases.
 *   **Red Nodos**: Failed phases currently in the **Correction Loop**.
@@ -140,7 +140,7 @@ A dedicated runner (or cron job) executes the following Python loop to process t
 
 To bring SSSF's amazing visual telemetry into Agno, we define the **ASSF Dashboard**:
 
-*   **Backend**: A lightweight **FastAPI** server running inside `.assf/` that polls `.assf/data/telemetry.db` (SQLite WAL mode).
+*   **Backend**: A lightweight **FastAPI** server running inside `.context/` that polls `.context/data/telemetry.db` (SQLite WAL mode).
 *   **Frontend**: A responsive Tailwind Dashboard served on `http://localhost:4600`.
 
 ### Key UI Modules:
