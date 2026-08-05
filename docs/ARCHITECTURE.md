@@ -47,12 +47,20 @@ This document details the architectural design and structural choices behind the
     from pydantic import BaseModel, Field
     from typing import Literal, List, Dict, Any
 
+
     class EnvelopeBase(BaseModel):
         status: Literal["success", "fail"]
         summary: str = Field(..., description="A short summary of what this phase achieved")
-        artifacts: List[str] = Field(default_factory=list, description="List of physical file paths created or edited")
-        metadata: Dict[str, Any] = Field(default_factory=dict, description="Execution and token metrics")
-        notes_for_next_agent: str = Field(..., description="Direct technical instructions for the subsequent node")
+        artifacts: List[str] = Field(
+            default_factory=list,
+            description="List of physical file paths created or edited",
+        )
+        metadata: Dict[str, Any] = Field(
+            default_factory=dict, description="Execution and token metrics"
+        )
+        notes_for_next_agent: str = Field(
+            ..., description="Direct technical instructions for the subsequent node"
+        )
     ```
 
 ### Pillar 4: Post-Phase Assertion Gates (DoD Enforcement)
