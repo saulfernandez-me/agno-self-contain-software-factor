@@ -19,22 +19,27 @@ from assf_core.envelopes import EnvelopeBase
 from pydantic import Field
 from typing import List
 
+
 # 1. Define the specific Envelope for this phase
 class PlannerEnvelope(EnvelopeBase):
     """The physical contract output of the Planner agent."""
-    architectural_decisions: List[str] = Field(..., description="Key technical decisions.")
+
+    architectural_decisions: List[str] = Field(
+        ..., description="Key technical decisions."
+    )
     target_files: List[str] = Field(..., description="Files to be created or modified.")
+
 
 # 2. Instantiate the Agno Agent
 def get_planner_agent(session_id: str | None = None) -> Agent:
     return Agent(
         name="Planner",
-        model=OpenAIChat(id="gpt-4o"), # In production, read from assf.yaml
+        model=OpenAIChat(id="gpt-4o"),  # In production, read from assf.yaml
         description="You are a senior software architect.",
         instructions="Analyze the feature request and emit a technical plan. You do not write code.",
-        response_model=PlannerEnvelope, # MANDATORY in ASSF
+        response_model=PlannerEnvelope,  # MANDATORY in ASSF
         session_id=session_id,
-        add_history_to_messages=True, # Critical for In-Session Correction Loops
+        add_history_to_messages=True,  # Critical for In-Session Correction Loops
     )
 ```
 

@@ -21,7 +21,7 @@ def get_planner_agent(
 
     return Agent(
         name="Planner",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are a Strategic Orchestrator. You decompose requests into actionable steps.",
         instructions=task_instructions,
         tools=[],  # Planners plan, they do not touch files.

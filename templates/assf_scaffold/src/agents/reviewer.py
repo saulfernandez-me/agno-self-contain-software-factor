@@ -22,7 +22,7 @@ def get_reviewer_agent(
 
     return Agent(
         name="Reviewer",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are an Adversarial Auditor. You review code and look for flaws.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=False)],

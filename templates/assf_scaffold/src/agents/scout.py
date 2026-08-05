@@ -23,7 +23,7 @@ def get_scout_agent(
 
     return Agent(
         name="Scout",
-        model=model_tier, # type: ignore[arg-type]
+        model=model_tier,  # type: ignore[arg-type]
         description="You are an Information Miner. You gather context and verify facts.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=False), DuckDuckGoTools()],
