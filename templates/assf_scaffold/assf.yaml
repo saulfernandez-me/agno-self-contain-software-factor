@@ -1,0 +1,14 @@
+domain:
+  name: "software_engineering"
+  # This serves as a fallback or default. In ASSF, the true identity is 
+  # often dynamically injected from PROJECT_IDENTITY.md.
+  description: "You are operating in a modern Software Engineering environment. Focus on clean code, SOLID principles, and strict deterministic execution."
+
+models:
+  # The heavy model is used for cognitively demanding tasks (Planner, Builder, Reviewer)
+  heavy: "openai:gpt-4o"
+  # The fast model is used for quick, high-volume tasks (Scout, Structurer, Documenter)
+  fast: "google:gemini-1.5-flash"
+
+limits:
+  correction_loop_max_attempts: 3
