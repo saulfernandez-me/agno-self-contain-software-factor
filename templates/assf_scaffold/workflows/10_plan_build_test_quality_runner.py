@@ -13,7 +13,7 @@ def run(task: str, domain: str):
 
     with wf.lane("agent"):
         plan = planner.run(task)
-        builder.run(plan.content.summary)
+        builder.run(plan.data.summary)
 
     for _ in range(3):
         with wf.lane("code"):

@@ -30,7 +30,7 @@ def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
     with workflow.lane("agent"):
         print("Running Product Owner Analysis...")
         po_response = product_owner.run(f"Epic Request: {epic_description}")
-        po_envelope = po_response.content
+        po_envelope = po_response.data
 
     # Note: In ASSF, schema validation happens natively via Pydantic in the agent call,
     # but a formal code gate could check constraints (e.g. no more than 5 edge cases).
@@ -46,7 +46,7 @@ def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
         Generate the atomic issues.
         """
         sm_response = scrum_master.run(sm_task)
-        backlog_envelope: BacklogEnvelope = sm_response.content
+        backlog_envelope: BacklogEnvelope = sm_response.data
 
     # 4. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
