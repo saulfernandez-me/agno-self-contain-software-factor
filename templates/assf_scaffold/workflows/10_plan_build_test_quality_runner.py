@@ -12,15 +12,15 @@ def run(task: str, domain: str):
     builder = get_builder_agent(domain, "Implement", EnvelopeBase)
 
     with wf.lane("agent"):
-        plan = planner.run(task)
-        builder.run(plan.data.summary)
+        plan = wf.run_agent(planner, task)
+        wf.run_agent(builder, plan.summary)
 
     for _ in range(3):
         with wf.lane("code"):
             lok, _, lerr = run_shell_command("ruff check .")
         if not lok:
             with wf.lane("agent"):
-                builder.run(lerr)
+                wf.run_agent(builder, lerr)
             continue
 
         with wf.lane("code"):
@@ -28,4 +28,4 @@ def run(task: str, domain: str):
         if tok:
             break
         with wf.lane("agent"):
-            builder.run(terr)
+            wf.run_agent(builder, terr)

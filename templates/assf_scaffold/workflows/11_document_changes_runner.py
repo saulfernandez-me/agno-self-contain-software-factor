@@ -13,4 +13,4 @@ def run(task: str, domain: str):
         _, diff, _ = run_shell_command("git diff main")
 
     with wf.lane("agent"):
-        doc.run(f"Diff: {diff}")
+        wf.run_agent(doc, f"Diff: {diff}")

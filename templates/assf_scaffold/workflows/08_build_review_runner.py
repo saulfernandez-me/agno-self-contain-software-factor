@@ -11,12 +11,14 @@ def run(task: str, domain: str):
     reviewer = get_reviewer_agent(domain, "Review code", EnvelopeBase)
 
     with wf.lane("agent"):
-        builder.run(task)
+        wf.run_agent(builder, task)
 
     for _ in range(3):
         with wf.lane("agent"):
-            rev = reviewer.run("Audit changes")
-        if rev.data.status == "success":
+            rev = wf.run_agent(reviewer, "Audit changes")
+        if rev.status == "success":
             break
         with wf.lane("agent"):
-            builder.run(f"Fix review notes: {rev.data.notes_for_next_agent}")
+            wf.run_agent(
+                builder, f"Fix review notes: {rev.notes_for_next_agent}"
+            )

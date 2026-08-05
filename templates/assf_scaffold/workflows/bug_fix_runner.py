@@ -29,14 +29,14 @@ def run_bug_fix_loop(bug_description: str, domain_context: str) -> None:
     # 1. SCOUT PHASE (Reproduce)
     with workflow.lane("agent"):
         print("Running Scout to gather bug context...")
-        scout_response = scout.run(bug_description)
-        scout_envelope = scout_response.data
+        scout_response = workflow.run_agent(scout, bug_description)
+        scout_envelope = scout_response
 
     # 2. BUILD PHASE (Fix)
     with workflow.lane("agent"):
         print("Running Builder to apply fix...")
         build_task = f"Bug context: {scout_envelope.summary}\nApply the fix."
-        builder.run(build_task)
+        workflow.run_agent(builder, build_task)
 
     # 3. VERIFICATION (GATE) & CORRECTION LOOP
     max_attempts = 3
@@ -63,7 +63,7 @@ def run_bug_fix_loop(bug_description: str, domain_context: str) -> None:
                 correction_prompt = (
                     f"The fix failed the regression test. Stderr:\n{stderr}"
                 )
-                builder.run(correction_prompt)
+                workflow.run_agent(builder, correction_prompt)
 
 
 if __name__ == "__main__":

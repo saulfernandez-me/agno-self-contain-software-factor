@@ -10,7 +10,7 @@ def run(task: str, domain: str):
     builder = get_builder_agent(domain, task, EnvelopeBase)
 
     with wf.lane("agent"):
-        builder.run(task)
+        wf.run_agent(builder, task)
 
     for _ in range(3):
         with wf.lane("code"):
@@ -18,4 +18,4 @@ def run(task: str, domain: str):
         if ok:
             break
         with wf.lane("agent"):
-            builder.run(f"Fix tests: {err}")
+            wf.run_agent(builder, f"Fix tests: {err}")

@@ -80,7 +80,7 @@ def generate_workflow(
         execution_blocks += f"""
     with workflow.lane("agent"):
         print("Running {a}...")
-        {a}_response = {a}.run("Execute {a} tasks.")
+        {a}_response = {a}_response = workflow.run_agent(, "Execute {a} tasks.")
         {a}_envelope = {a}_response.data
 """
 

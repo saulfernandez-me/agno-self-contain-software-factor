@@ -8,4 +8,4 @@ def run(task: str, domain: str):
     wf = AssfWorkflow(name="02_recon_only")
     scout = get_scout_agent(domain, task, EnvelopeBase)
     with wf.lane("agent"):
-        scout.run(task)
+        wf.run_agent(scout, task)
