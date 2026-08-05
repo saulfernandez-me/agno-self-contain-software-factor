@@ -1,0 +1,28 @@
+graph TD
+    %% Epic Breakdown: Reviewer (PO) -> Planner (Scrum Master) -> Code (GitHub API)
+
+    subgraph "LANE: agent"
+        PO["reviewer: Product Analysis & MVP Scope"]:::agent
+        SM["planner: Atomic Issue Breakdown"]:::agent
+    end
+
+    subgraph "LANE: code"
+        GATE_PO["assert_schema_valid: ProductAnalysisEnvelope"]:::code
+        GATE_SM["assert_schema_valid: BacklogEnvelope"]:::code
+        API_GITHUB["run_shell_command: gh issue create"]:::code
+    end
+
+    subgraph "LANE: engineer"
+        HITL["Escalation: Invalid Epic / Blocked"]:::human
+    end
+
+    %% Execution Flow
+    PO --> GATE_PO
+    GATE_PO -->|Pass| SM
+    GATE_PO -.->|Fail| PO
+    
+    SM --> GATE_SM
+    GATE_SM -.->|Fail| SM
+    GATE_SM -->|Pass| API_GITHUB
+    
+    API_GITHUB -->|Pass| HITL
