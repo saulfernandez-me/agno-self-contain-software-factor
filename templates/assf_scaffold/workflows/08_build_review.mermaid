@@ -1,0 +1,7 @@
+graph TD
+    subgraph "LANE: agent"
+        BUILD["builder: Implement Code"]:::agent
+        REVIEW["reviewer: Audit Code"]:::agent
+    end
+    BUILD --> REVIEW
+    REVIEW -.->|Rejects| BUILD

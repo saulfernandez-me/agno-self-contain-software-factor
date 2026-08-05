@@ -12,7 +12,6 @@ class ScoutEnvelope(EnvelopeBase):
     """Specific envelope for the scout phase."""
 
 
-
 def run_bug_fix_loop(bug_description: str, domain_context: str) -> None:
     """
     Executes the Bug Fix workflow: Reproduce (Scout) -> Fix (Builder) -> Test (Gate).
