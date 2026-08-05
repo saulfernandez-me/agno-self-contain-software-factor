@@ -16,7 +16,7 @@ def run(task: str, domain: str):
     for _ in range(3):
         with wf.lane("agent"):
             rev = reviewer.run("Audit changes")
-        if rev.data.status == "success":
+        if rev.content.status == "success":
             break
         with wf.lane("agent"):
-            builder.run(f"Fix review notes: {rev.data.notes_for_next_agent}")
+            builder.run(f"Fix review notes: {rev.content.notes_for_next_agent}")

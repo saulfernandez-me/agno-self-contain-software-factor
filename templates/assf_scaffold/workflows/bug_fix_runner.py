@@ -30,7 +30,7 @@ def run_bug_fix_loop(bug_description: str, domain_context: str) -> None:
     with workflow.lane("agent"):
         print("Running Scout to gather bug context...")
         scout_response = scout.run(bug_description)
-        scout_envelope = scout_response.data
+        scout_envelope = scout_response.content
 
     # 2. BUILD PHASE (Fix)
     with workflow.lane("agent"):
