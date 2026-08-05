@@ -7,7 +7,7 @@ def get_reviewer_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "openai:gpt-4o",
+    model_tier: str = "heavy",
 ) -> Agent:
     """
     Factory for the Reviewer Agent (The Adversarial Auditor).
@@ -22,7 +22,7 @@ def get_reviewer_agent(
 
     return Agent(
         name="Reviewer",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are an Adversarial Auditor. You review code and look for flaws.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=False)],

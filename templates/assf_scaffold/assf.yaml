@@ -1,14 +1,22 @@
 domain:
   name: "software_engineering"
-  # This serves as a fallback or default. In ASSF, the true identity is 
-  # often dynamically injected from PROJECT_IDENTITY.md.
   description: "You are operating in a modern Software Engineering environment. Focus on clean code, SOLID principles, and strict deterministic execution."
 
-models:
-  # The heavy model is used for cognitively demanding tasks (Planner, Builder, Reviewer)
-  heavy: "openai:gpt-4o"
-  # The fast model is used for quick, high-volume tasks (Scout, Structurer, Documenter)
-  fast: "google:gemini-1.5-flash"
+model_tiers:
+  # HEAVY: For intense cognitive tasks (architecture, complex code, adversarial review)
+  heavy:
+    - "openai:gpt-4o"
+    - "anthropic:claude-3-5-sonnet"
+  
+  # WORKHORSE: For continuous, medium-complexity tasks (data structuring, mapping)
+  workhorse:
+    - "openai:gpt-5.6-terra"
+    - "google:gemini-1.5-pro"
+  
+  # LIGHTWEIGHT: For fast, low-complexity tasks (web search, reading, simple docs)
+  lightweight:
+    - "google:gemini-1.5-flash"
+    - "openai:gpt-5.6-luna"
 
 limits:
   correction_loop_max_attempts: 3

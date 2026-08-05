@@ -6,7 +6,7 @@ def get_planner_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "openai:gpt-4o",
+    model_tier: str = "heavy",
 ) -> Agent:
     """
     Factory for the Planner Agent (The Strategic Orchestrator).
@@ -21,7 +21,7 @@ def get_planner_agent(
 
     return Agent(
         name="Planner",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are a Strategic Orchestrator. You decompose requests into actionable steps.",
         instructions=task_instructions,
         tools=[],  # Planners plan, they do not touch files.

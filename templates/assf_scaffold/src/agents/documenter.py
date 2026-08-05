@@ -7,7 +7,7 @@ def get_documenter_agent(
     domain_context: str,
     task_instructions: str,
     response_model: type[BaseModel],
-    model_id: str = "google:gemini-1.5-flash",
+    model_tier: str = "lightweight",
 ) -> Agent:
     """
     Factory for the Documenter Agent (The Technical Writer).
@@ -22,7 +22,7 @@ def get_documenter_agent(
 
     return Agent(
         name="Documenter",
-        model=model_id,
+        model=model_tier, # type: ignore[arg-type]
         description="You are a Technical Writer. You synthesize work into documentation.",
         instructions=task_instructions,
         tools=[FileTools(read_access=True, write_access=True)],
