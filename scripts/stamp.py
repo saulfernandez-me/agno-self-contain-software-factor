@@ -142,19 +142,27 @@ Output the content matching the Pydantic schema perfectly.
     console.print("[cyan]⏳ Generating identity files...[/cyan]")
     try:
         response = agent.run(prompt)
-        if not hasattr(response, 'data') or response.data is None:
+        
+        # Agno 2.8.7 behavior: structured output might be in .content directly
+        output = None
+        if hasattr(response, 'data') and response.data is not None:
+            output = response.data
+        elif hasattr(response, 'content') and isinstance(response.content, BaseModel):
+            output = response.content
+            
+        if output is None:
             raise ValueError(f"Agent failed to generate structured data. Content: {getattr(response, 'content', 'None')}")
             
-        output: InceptionOutput = response.data  # type: ignore
+        output_cast: InceptionOutput = output  # type: ignore
 
         # Write AI.md
         ai_md_path = target_dir / "AI.md"
-        ai_md_path.write_text(output.ai_md_content, encoding="utf-8")
+        ai_md_path.write_text(output_cast.ai_md_content, encoding="utf-8")
         console.print(f"[green]✓ Wrote {ai_md_path}[/green]")
-
+        
         # Write catalog-info.yaml
         if not existing_catalog.exists():
-            existing_catalog.write_text(output.catalog_info_content, encoding="utf-8")
+            existing_catalog.write_text(output_cast.catalog_info_content, encoding="utf-8")
             console.print(f"[green]✓ Wrote {existing_catalog}[/green]")
     except (OSError, ValueError, AttributeError) as e:
         console.print(f"[red]❌ Inception Engine failed to generate files: {e}[/red]")
