@@ -20,18 +20,18 @@ def run(task: str, domain: str):
 
     for _ in range(3):
         with wf.lane("agent"):
-            builder.run(plan.data.summary)
+            builder.run(plan.content.summary)
         with wf.lane("code"):
             ok, _, err = run_shell_command("pytest")
         if not ok:
-            plan.data.summary = f"Fix tests: {err}"
+            plan.content.summary = f"Fix tests: {err}"
             continue
 
         with wf.lane("agent"):
             rev = reviewer.run("Audit")
-        if rev.data.status == "success":
+        if rev.content.status == "success":
             break
-        plan.data.summary = f"Fix review: {rev.data.notes_for_next_agent}"
+        plan.content.summary = f"Fix review: {rev.content.notes_for_next_agent}"
 
     with wf.lane("agent"):
         doc.run("Write PR based on changes")
