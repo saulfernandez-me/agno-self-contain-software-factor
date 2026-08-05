@@ -60,7 +60,8 @@ agno-self-contain-software-factor/
 ├── docs/                               # Conceptual documentation
 │   ├── ARCHITECTURE.md                 # Technical design and pillars
 │   ├── FEATURES.md                     # Roadmap and specifications
-│   └── ORIGINS.md                      # Design lineage and SSSF origins
+│   ├── ORIGINS.md                      # Design lineage and SSSF origins
+│   └── STRUCTURE_AND_DEPLOYMENT.md     # Repo structure and stamping pattern
 ├── assf/                               # Source code (coming soon)
 │   ├── core/                           # Factory engines, base workflow and envelopes
 │   ├── agents/                         # Custom Agno agents with bounded roles
