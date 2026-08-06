@@ -40,10 +40,26 @@ def run(task: str, domain: str):
             continue
 
         with wf.lane("agent"):
-            rev = wf.run_agent(reviewer, "Audit")
+            review_prompt = f"""
+            [ORIGINAL BUSINESS REQUEST]
+            {task}
+            
+            [ARCHITECTURAL PLAN]
+            {plan.summary}
+            
+            [IMPLEMENTATION NOTES]
+            Please audit the codebase against the original request and the plan.
+            """
+            rev = wf.run_agent(reviewer, review_prompt)
         if rev.status == "success":
             break
         plan.summary = f"Fix review: {rev.notes_for_next_agent}"
 
     with wf.lane("agent"):
-        wf.run_agent(doc, "Write PR based on changes")
+        doc_prompt = f"""
+        [ORIGINAL BUSINESS REQUEST]
+        {task}
+        
+        Write the PR description summarizing how the implementation solves the request.
+        """
+        wf.run_agent(doc, doc_prompt)
