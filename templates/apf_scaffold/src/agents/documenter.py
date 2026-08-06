@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agno.agent import Agent
 from pydantic import BaseModel
 
@@ -15,21 +17,20 @@ def get_documenter_agent(
 ) -> Agent:
     """
     Factory for the Documenter Agent (The Technical Writer).
-
-    Role:
-        Synthesizes completed work into human-readable documentation.
-        Writes PR descriptions, updates READMEs, and drafts release notes.
-
-    Capabilities:
-        Write-enabled FileSystem (intended for markdown/docs).
     """
+    behavior_file = Path(".context/agents/documenter_behavior.md")
+    behavioral_harness = (
+        behavior_file.read_text(encoding="utf-8")
+        if behavior_file.exists()
+        else "You are a Technical Writer. You synthesize work into documentation."
+    )
 
     return Agent(
         name="Documenter",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
-        description="You are a Technical Writer. You synthesize work into documentation.",
-        instructions=task_instructions,
+        description=behavioral_harness,
+        instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[WorkspaceTools(restrict_to_cwd=True)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]

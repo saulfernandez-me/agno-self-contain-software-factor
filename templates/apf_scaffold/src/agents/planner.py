@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agno.agent import Agent
 from pydantic import BaseModel
 
@@ -12,21 +14,20 @@ def get_planner_agent(
 ) -> Agent:
     """
     Factory for the Planner Agent (The Strategic Orchestrator).
-
-    Role:
-        Decomposes feature requests into actionable, atomic technical steps.
-        Does not execute or write implementation code.
-
-    Capabilities:
-        Pure cognition. No file writing tools.
     """
+    behavior_file = Path(".context/agents/planner_behavior.md")
+    behavioral_harness = (
+        behavior_file.read_text(encoding="utf-8")
+        if behavior_file.exists()
+        else "You are a Strategic Orchestrator. You decompose requests into actionable steps."
+    )
 
     return Agent(
         name="Planner",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
-        description="You are a Strategic Orchestrator. You decompose requests into actionable steps.",
-        instructions=task_instructions,
+        description=behavioral_harness,
+        instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[],  # Planners plan, they do not touch files.
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
