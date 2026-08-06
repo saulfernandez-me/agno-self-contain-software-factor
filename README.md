@@ -18,6 +18,14 @@ While **Agno** provides an incredible set of low-level agentic primitives (`Agen
 
 ---
 
+## 🛠️ Tool Management & Least Privilege
+
+Agents in APF are mathematically bounded by the tools they are assigned. A Planner cannot write files, and a Scout cannot execute bash commands. This is enforced natively through Agno Toolkits.
+
+👉 **[Read the deep dive into Tool Management](docs/TOOL_MANAGEMENT.md)**
+
+---
+
 ## 🧠 The 5-Layer Cognitive Topology
 
 APF eliminates "Prompt Dilution" and "Handoff Amnesia" by dynamically injecting 5 decoupled layers of context into an agent at runtime:
