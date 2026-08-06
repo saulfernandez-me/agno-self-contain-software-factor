@@ -21,7 +21,7 @@ Each workflow represents a distinct "assembly line" designed for a specific Prod
 | **09** | `plan_build_test` | Standard 3-step feature implementation. | Planner, Builder | Agent, Code |
 | **10** | `plan_build_test_quality`| Strict feature implementation (Lint + Test gates).| Planner, Builder | Agent, Code |
 | **11** | `document_changes` | Auto-generate PRs and READMEs from git diffs. | Documenter | Agent, Code |
-| **12** | `full_pdlc` | **The Golden Path:** End-to-end feature delivery. | All | Agent, Code, HITL |
+| **12** | `full_pdlc` | **The Golden Path:** End-to-end feature delivery. | Planner, Builder, Reviewer, Documenter | Agent, Code, HITL |
 | **N/A** | `bug_fix` | Surgical operation to reproduce and fix a bug. | Scout, Builder | Agent, Code |
 | **N/A** | `epic_to_issues` | **The Brain:** Decompose Epics into GitHub Issues.| Reviewer, Planner | Agent, Code |
 
