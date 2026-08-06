@@ -1,7 +1,7 @@
 # RFC 001: Agno Self-Contain Software Factor (APF) - Ideation and Base Architecture
 
 **Status:** Accepted
-**Author:** Saúl Fernández (Platform Architect) / Tachikoma (Tech Lead)
+**Author:** Saúl Fernández (Platform Architect) / AI Assistant (Tech Lead)
 **Date:** August 2026
 
 ---
@@ -34,4 +34,4 @@ APF will be built as a **"Hybrid Library and Scaffold"** on top of the Agno SDK,
 Beyond applying the SSSF dogmas, APF introduces:
 * **Bidirectional Visual Execution:** Using **Mermaid.js** not just as documentation, but as source code (a parser that converts Mermaid graphs into Python flows) and telemetry (live-generated traces).
 * **Control Plane via GitHub Issues:** Templatizing Issues and state labels (`apf:planning`, `apf:implementing`) so that GitHub acts as the asynchronous control interface, replacing exclusive terminal interaction.
-* **Visual Observability (Tachikoma Dash):** A local UI to financially audit token consumption and view the execution waterfall in real time.
+* **Visual Observability (Observability UI):** A local UI to financially audit token consumption and view the execution waterfall in real time.
