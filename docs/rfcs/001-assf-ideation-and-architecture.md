@@ -1,4 +1,4 @@
-# RFC 001: Agno Self-Contain Software Factor (ASSF) - Ideation and Base Architecture
+# RFC 001: Agno Self-Contain Software Factor (ASF) - Ideation and Base Architecture
 
 **Status:** Accepted
 **Author:** Saúl Fernández (Platform Architect) / Tachikoma (Tech Lead)
@@ -14,7 +14,7 @@ In modern platform engineering, delegating complex development tasks to Artifici
 3. **The Deployment Challenge (Portability):** Complex orchestration solutions usually live isolated in separate repositories, making it difficult for a product engineer to use the AI directly in their working repository quickly and without global configurations.
 
 ## 2. Ideation (Solution Synthesis)
-To solve this, we devised **ASSF**. It is born from the need to merge our internal experience orchestrating `pi-subagents` with the dogmatic guidelines discovered in Dan Disler's **SSSF (Super Simple Software Factory)** framework.
+To solve this, we devised **ASF**. It is born from the need to merge our internal experience orchestrating `pi-subagents` with the dogmatic guidelines discovered in Dan Disler's **SSSF (Super Simple Software Factory)** framework.
 
 Our ideation relies on three axioms:
 * **If the LLM is probabilistic, the harness must be deterministic:** The AI proposes solutions, but Python code decides if they are approved and dictates the next step.
@@ -22,16 +22,16 @@ Our ideation relies on three axioms:
 * **If the framework is useful, it must be Stampable:** The solution must be capable of being injected (`stamp`) directly into any target repository, making it autonomous and executable via `uv`.
 
 ## 3. Architecture Proposal (The Pillars)
-ASSF will be built as a **"Hybrid Library and Scaffold"** on top of the Agno SDK, strictly implementing:
+ASF will be built as a **"Hybrid Library and Scaffold"** on top of the Agno SDK, strictly implementing:
 
-1. **Graph Sovereignty (AssfWorkflow):** An engine where state transitions are pure Python code, not LLM decisions.
+1. **Graph Sovereignty (AsfWorkflow):** An engine where state transitions are pure Python code, not LLM decisions.
 2. **Execution Lanes:** Strict separation between `agent` (cognition), `code` (local bash scripts), and `engineer` (human approval).
 3. **Physical Contracts (Envelopes):** Agents communicate exclusively by reading and writing JSON files validated by `Pydantic`, eradicating the chat history as a method of data transfer.
 4. **Post-Phase Validation Gates:** Static assertions that verify the success of a phase (file existence, passing tests) before advancing.
 5. **In-Session Correction Loops:** If a Gate fails, the structured error is injected into the AI's active session for correction, bypassing the cost of a cold restart.
 
 ## 4. Proprietary Innovations over SSSF
-Beyond applying the SSSF dogmas, ASSF introduces:
+Beyond applying the SSSF dogmas, ASF introduces:
 * **Bidirectional Visual Execution:** Using **Mermaid.js** not just as documentation, but as source code (a parser that converts Mermaid graphs into Python flows) and telemetry (live-generated traces).
-* **Control Plane via GitHub Issues:** Templatizing Issues and state labels (`assf:planning`, `assf:implementing`) so that GitHub acts as the asynchronous control interface, replacing exclusive terminal interaction.
+* **Control Plane via GitHub Issues:** Templatizing Issues and state labels (`asf:planning`, `asf:implementing`) so that GitHub acts as the asynchronous control interface, replacing exclusive terminal interaction.
 * **Visual Observability (Tachikoma Dash):** A local UI to financially audit token consumption and view the execution waterfall in real time.

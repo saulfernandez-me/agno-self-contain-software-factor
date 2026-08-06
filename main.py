@@ -1,5 +1,5 @@
 def main():
-    print("Hello from agno-self-contain-software-factor!")
+    print("Hello from agno-software-factory!")
 
 
 if __name__ == "__main__":

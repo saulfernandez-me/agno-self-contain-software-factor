@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from assf_core.assert_gates import (
+from asf_core.assert_gates import (
     assert_file_exists,
     assert_file_not_empty,
     assert_schema_valid,

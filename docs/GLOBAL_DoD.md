@@ -1,6 +1,6 @@
 # Global Definition of Done (DoD) & Engineering Standards
 
-This document defines the quality rules and global acceptance criteria that every Issue, Pull Request, and line of code in **ASSF** must meet before being considered "Done".
+This document defines the quality rules and global acceptance criteria that every Issue, Pull Request, and line of code in **ASF** must meet before being considered "Done".
 
 ## 1. Global Acceptance Criteria (DoD)
 
@@ -22,7 +22,7 @@ For an Issue to transition from `Implementing` to `Done` (or be merged into `mai
 - Production dependencies are strictly separated from development dependencies (`--dev`).
 
 ### Python Code Structure
-- **Source Directory:** `src/assf_core/` (Installable library).
+- **Source Directory:** `src/asf_core/` (Installable library).
 - **Tests Directory:** `tests/` (Mirroring the `src/` structure).
 - **Templates Directory:** `templates/` (Files to be "stamped" into target repositories).
 

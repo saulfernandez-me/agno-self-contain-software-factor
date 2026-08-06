@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from assf_core.tools.workspace_tools import WorkspaceTools
+from asf_core.tools.workspace_tools import WorkspaceTools
 
 
 def test_workspace_tools_tree(tmp_path: Path) -> None:
