@@ -1,0 +1,31 @@
+graph TD
+    %% APF Visual Standard v2.0 Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+    classDef human fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff,rx:5px,ry:5px
+
+    subgraph "🤖 LANE: AGENT (Cognition)"
+        PLAN["📐 planner: Design architecture"]:::agent
+        BUILD["🏗️ builder: Write code & tests"]:::agent
+        REV["🛡️ reviewer: Adversarial code audit"]:::agent
+    end
+    
+    subgraph "⚙️ LANE: CODE (Deterministic)"
+        G_TEST{"✅ assert: pytest pass?"}:::code
+    end
+
+    subgraph "👤 LANE: ENGINEER (HITL)"
+        HITL["⚠️ Escalation: Manual PR Review"]:::human
+    end
+
+    %% Execution Flow & Data Contracts
+    PLAN -->|PlanEnvelope| BUILD
+    BUILD -->|BuildEnvelope| G_TEST
+    
+    %% Correction Loop (Dashed lines)
+    G_TEST -.->|Fail: stderr| BUILD
+    
+    %% Success Path
+    G_TEST -->|Pass| REV
+    REV -.->|Fail: review_notes| BUILD
+    REV -->|Pass| HITL
