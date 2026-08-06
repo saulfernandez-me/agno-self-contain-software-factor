@@ -1,12 +1,12 @@
 # 🚀 Features and Technical Specifications
 
-This document outlines the core features, design patterns, and roadmap for the **Agno Self-Contain Software Factor (ASF)**.
+This document outlines the core features, design patterns, and roadmap for the **Agno Self-Contain Software Factor (APF)**.
 
 ---
 
 ## 🎨 Key Features
 
-### 1. The `AsfWorkflow` Engine
+### 1. The `ApfWorkflow` Engine
 A specialized extension of Agno's standard `Workflow` that enforces SSSF-style determinism:
 *   **State Machine Routing**: Step routing is managed purely by standard Python logic (loops, conditionals), preventing the agent from dictating the graph.
 *   **Lane Context Manager**: Uses Python's `with workflow.lane("agent"):` or `with workflow.lane("code"):` to track, style, and log metrics based on the current execution environment.
@@ -44,7 +44,7 @@ A feedback mechanism for failed gates:
             ▼
 ┌────────────────────────────────────────────────────────┐
 │  PHASE 2: Engine & Lanes                               │
-│  - AsfWorkflow custom implementation                  │
+│  - ApfWorkflow custom implementation                  │
 │  - Lane context managers & logging                     │
 │  - In-session correction loops                         │
 └───────────┬────────────────────────────────────────────┘
@@ -64,11 +64,11 @@ A feedback mechanism for failed gates:
 *   [ ] Standardize the Pydantic schemas.
 
 ### Phase 2: Orchestration Core
-*   [ ] Implement `AsfWorkflow` and lane context managers.
+*   [ ] Implement `ApfWorkflow` and lane context managers.
 *   [ ] Build the file-system state tracker (`.context/`).
 *   [ ] Design the async correction-loop machinery.
 
 ### Phase 3: Developer Agents & CLI
 *   [ ] Configure default Agno agents (e.g., CodeWriter, CodeAuditor).
 *   [ ] Implement the terminal-based Gantt-style execution dashboard.
-*   [ ] Add `asf` command-line utility.
+*   [ ] Add `apf` command-line utility.

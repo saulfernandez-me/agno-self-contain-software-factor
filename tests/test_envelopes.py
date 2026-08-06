@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from asf_core.envelopes import BuildEnvelope, EnvelopeBase, ResearchEnvelope
+from apf_core.envelopes import BuildEnvelope, EnvelopeBase, ResearchEnvelope
 
 
 def test_envelope_base_success() -> None:

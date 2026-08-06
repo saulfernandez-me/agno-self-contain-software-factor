@@ -1,11 +1,11 @@
 import time
 
-from asf_core.workflow import AsfWorkflow
+from apf_core.workflow import ApfWorkflow
 
 
-def test_asf_workflow_initialization() -> None:
-    """Test that the AsfWorkflow initializes correctly with tracking dicts."""
-    workflow = AsfWorkflow(name="test_workflow")
+def test_apf_workflow_initialization() -> None:
+    """Test that the ApfWorkflow initializes correctly with tracking dicts."""
+    workflow = ApfWorkflow(name="test_workflow")
 
     assert workflow.name == "test_workflow"
     assert "agent" in workflow.lane_metrics
@@ -17,9 +17,9 @@ def test_asf_workflow_initialization() -> None:
         assert workflow.lane_metrics[lane_type]["total_time_ms"] == 0.0  # type: ignore
 
 
-def test_asf_workflow_lane_tracking() -> None:
+def test_apf_workflow_lane_tracking() -> None:
     """Test that the lane context manager accurately tracks count and time."""
-    workflow = AsfWorkflow(name="test_tracking")
+    workflow = ApfWorkflow(name="test_tracking")
 
     # Execute an 'agent' lane
     with workflow.lane("agent"):
@@ -44,9 +44,9 @@ def test_asf_workflow_lane_tracking() -> None:
     assert metrics["engineer"]["total_time_ms"] == 0.0
 
 
-def test_asf_workflow_lane_exception_handling() -> None:
+def test_apf_workflow_lane_exception_handling() -> None:
     """Test that the lane context manager tracks metrics even if an exception occurs."""
-    workflow = AsfWorkflow(name="test_exception")
+    workflow = ApfWorkflow(name="test_exception")
 
     try:
         with workflow.lane("code"):

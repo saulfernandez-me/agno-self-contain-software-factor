@@ -1,5 +1,5 @@
 [project]
-name = "agno-software-factory"
+name = "agno-product-factory"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-asf = "asf_core.cli:app"
+apf = "apf_core.cli:app"
 
 [dependency-groups]
 dev = [

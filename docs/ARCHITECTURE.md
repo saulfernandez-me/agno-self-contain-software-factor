@@ -1,14 +1,14 @@
-# 🏛️ Technical Architecture: ASF
+# 🏛️ Technical Architecture: APF
 
-This document details the architectural design and structural choices behind the **Agno Self-Contain Software Factor (ASF)** framework. It explains how we bridge the low-level agentic capabilities of **Agno** with the rigid constraints of the **Super Simple Software Factory (SSSF)**.
+This document details the architectural design and structural choices behind the **Agno Self-Contain Software Factor (APF)** framework. It explains how we bridge the low-level agentic capabilities of **Agno** with the rigid constraints of the **Super Simple Product Factory (SSSF)**.
 
 ---
 
-## 🏛️ The 5 Pillars of ASF
+## 🏛️ The 5 Pillars of APF
 
 ```
 +-----------------------------------------------------------------------+
-|                       ASF RUNTIME GRAPH                              |
+|                       APF RUNTIME GRAPH                              |
 |                                                                       |
 |  +--------------------+      +-----------------+      +------------+  |
 |  |     Agent Lane     |      |    Code Lane    |      | Human Lane |  |
@@ -29,19 +29,19 @@ This document details the architectural design and structural choices behind the
 
 ### Pillar 1: Graph Sovereignty (Deterministic Python Execution)
 *   **The Problem:** Letting an LLM decide what tool or script to run next leads to unpredictable behavior, infinite loops, and hallucinated paths.
-*   **The ASF Solution:** The orchestration engine is written in pure Python. The agents are treated as pure "cognitive nodes" inside the workflow.
-*   *Implementation in Agno:* Instead of letting agents freely call tools that jump between files, the pipeline is modeled as an `AsfWorkflow` (extending Agno's `Workflow`). Each step is a Python function that invokes a specific agent, captures its output, and handles state transitions deterministically.
+*   **The APF Solution:** The orchestration engine is written in pure Python. The agents are treated as pure "cognitive nodes" inside the workflow.
+*   *Implementation in Agno:* Instead of letting agents freely call tools that jump between files, the pipeline is modeled as an `ApfWorkflow` (extending Agno's `Workflow`). Each step is a Python function that invokes a specific agent, captures its output, and handles state transitions deterministically.
 
 ### Pillar 2: Strictly Divided Execution Lanes
 *   **The Problem:** Mixing cognitive tasks, automated terminal scripts, and human decisions into a single chat thread creates chaotic execution states.
-*   **The ASF Solution:** We partition tasks into three mutually exclusive lanes:
+*   **The APF Solution:** We partition tasks into three mutually exclusive lanes:
     1.  `kind="agent"`: Pure LLM cognition. Requires reasoning, reading context, and proposing solutions.
     2.  `kind="code"`: Deterministic local scripts (linters, test runners, git operations) running at native CPU speed with zero token cost.
     3.  `kind="engineer"`: Human-in-the-loop (HITL) gate for approvals or manual modifications.
 
 ### Pillar 3: Physical Contracts via Pydantic Envelopes
 *   **The Problem:** Passing huge raw conversational contexts between agents introduces noise, instruction-following degradation, and is highly token-inefficient.
-*   **The ASF Solution:** The output of an `agent` phase is not plain text; it is a structured, Pydantic-validated JSON file called an **Envelope** written to disk. The next agent or script *only* reads this file.
+*   **The APF Solution:** The output of an `agent` phase is not plain text; it is a structured, Pydantic-validated JSON file called an **Envelope** written to disk. The next agent or script *only* reads this file.
 *   *Envelope Base Schema:*
     ```python
     from pydantic import BaseModel, Field
@@ -65,7 +65,7 @@ This document details the architectural design and structural choices behind the
 
 ### Pillar 4: Post-Phase Assertion Gates (DoD Enforcement)
 *   **The Problem:** An agent claiming *"I have finished writing the server code"* is not proof of success.
-*   **The ASF Solution:** Every `agent` phase is immediately followed by a `code` phase running **Assertion Gates**. These are unit tests, static code checkers, or file system assertions that run locally.
+*   **The APF Solution:** Every `agent` phase is immediately followed by a `code` phase running **Assertion Gates**. These are unit tests, static code checkers, or file system assertions that run locally.
 *   *Core Gates:*
     *   `ArtifactsExistGate`: Confirms every file declared in the envelope actually exists in the workspace.
     *   `NonEmptyGate`: Verifies the mutated files have real content and are not placeholders.
@@ -74,7 +74,7 @@ This document details the architectural design and structural choices behind the
 
 ### Pillar 5: In-Session Correction Loops
 *   **The Problem:** Tearing down the agent container and starting a fresh run from scratch on failure is expensive, slow, and discards valuable context.
-*   **The ASF Solution:** If an assertion gate fails, the workflow does not abort. Instead, it re-prompts the active agent session in-place with a structured JSON containing the precise failures. The agent resolves the errors and emits a new envelope. This loop repeats up to a configurable `max_attempts` limit.
+*   **The APF Solution:** If an assertion gate fails, the workflow does not abort. Instead, it re-prompts the active agent session in-place with a structured JSON containing the precise failures. The agent resolves the errors and emits a new envelope. This loop repeats up to a configurable `max_attempts` limit.
 
 ---
 
