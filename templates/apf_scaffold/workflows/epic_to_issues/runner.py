@@ -1,5 +1,7 @@
 from src.agents.planner import get_planner_agent  # type: ignore[import-not-found]
-from src.agents.reviewer import get_reviewer_agent  # type: ignore[import-not-found]
+from src.agents.product_owner import (
+    get_product_owner_agent,  # type: ignore[import-not-found]
+)
 
 from apf_core.assert_gates import run_shell_command
 from apf_core.workflow import ApfWorkflow
@@ -14,9 +16,9 @@ def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
     workflow = ApfWorkflow(name="epic_breakdown")
 
     # 1. Instantiate agents with specific PM roles injected
-    product_owner = get_reviewer_agent(
+    product_owner = get_product_owner_agent(
         domain_context,
-        "Act as a Product Owner / Devil's Advocate. Analyze this Epic for edge cases, validity, and define an MVP scope.",
+        "Act as the Product Owner. Analyze this Epic for edge cases, validity, and define an MVP scope.",
         ProductAnalysisEnvelope,
     )
 

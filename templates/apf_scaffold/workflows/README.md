@@ -23,7 +23,7 @@ Each workflow represents a distinct "assembly line" designed for a specific Prod
 | **11** | `document_changes` | Auto-generate PRs and READMEs from git diffs. | Documenter | Agent, Code |
 | **12** | `full_pdlc` | **The Golden Path:** End-to-end feature delivery. | Planner, Builder, Reviewer, Documenter | Agent, Code, HITL |
 | **N/A** | `bug_fix` | Surgical operation to reproduce and fix a bug. | Scout, Builder | Agent, Code |
-| **N/A** | `epic_to_issues` | **The Brain:** Decompose Epics into GitHub Issues.| Reviewer, Planner | Agent, Code |
+| **N/A** | `epic_to_issues` | **The Brain:** Decompose Epics into GitHub Issues.| Product Owner, Planner | Agent, Code |
 
 ---
 
@@ -72,4 +72,4 @@ The release pipeline. Uses the `code` lane to execute `git diff main`, pipes the
 A specialized surgical pipeline. The `Scout` is first deployed to reproduce the bug by gathering logs. Its context is fed to the `Builder`, followed by a strict test verification loop.
 
 ### epic_to_issues (The Brain)
-The Product Management pipeline. The `Reviewer` acts as a Product Owner to define MVP scope and edge cases. The `Planner` acts as a Scrum Master to atomize the scope into technical tasks. Finally, the `code` lane uses the GitHub CLI to autonomously populate the project backlog.
+The Product Management pipeline. The `Product Owner` agent acts to define MVP scope and edge cases. The `Planner` acts as a Scrum Master to atomize the scope into technical tasks. Finally, the `code` lane uses the GitHub CLI to autonomously populate the project backlog.
