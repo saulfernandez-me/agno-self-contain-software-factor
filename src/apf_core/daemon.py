@@ -128,13 +128,16 @@ def process_issue(issue_number: int) -> None:
 
             # Since the component-based refactor, the entrypoint is simply 'run'
             if hasattr(runner_module, "run"):
-                run_func = getattr(runner_module, "run")
+                run_func = runner_module.run
                 run_func(task_instruction, domain_context)
             else:
                 # Fallback for older flat scripts
                 run_func = None
                 for attr_name in dir(runner_module):
-                    if attr_name.startswith("run_") and attr_name != "run_shell_command":
+                    if (
+                        attr_name.startswith("run_")
+                        and attr_name != "run_shell_command"
+                    ):
                         run_func = getattr(runner_module, attr_name)
                         break
 

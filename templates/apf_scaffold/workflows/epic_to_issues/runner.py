@@ -47,7 +47,9 @@ def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
         
         Generate the atomic issues.
         """
-        sm_response = workflow.run_agent(scrum_master, sm_task)
+        sm_response = workflow.run_agent(
+            scrum_master, sm_task, skills=["epic_breakdown"]
+        )
         backlog_envelope: BacklogEnvelope = sm_response.data
 
     # 4. EXECUTION PHASE (GitHub API Injection)
