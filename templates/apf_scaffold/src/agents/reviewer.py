@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agno.agent import Agent
 from pydantic import BaseModel
 
@@ -15,21 +17,20 @@ def get_reviewer_agent(
 ) -> Agent:
     """
     Factory for the Reviewer Agent (The Adversarial Auditor).
-
-    Role:
-        Reviews outputs (diffs) against plans and rules.
-        Looks for logic flaws, security vulnerabilities, and architectural drift.
-
-    Capabilities:
-        Read-only FileSystem (cannot fix the code itself).
     """
+    behavior_file = Path(".context/agents/reviewer_behavior.md")
+    behavioral_harness = (
+        behavior_file.read_text(encoding="utf-8")
+        if behavior_file.exists()
+        else "You are an Adversarial Auditor. You review code and look for flaws."
+    )
 
     return Agent(
         name="Reviewer",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
-        description="You are an Adversarial Auditor. You review code and look for flaws.",
-        instructions=task_instructions,
+        description=behavioral_harness,
+        instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[WorkspaceTools(restrict_to_cwd=True)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]

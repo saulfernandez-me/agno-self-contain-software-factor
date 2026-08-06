@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agno.agent import Agent
 from agno.tools.duckduckgo import DuckDuckGoTools
 from pydantic import BaseModel
@@ -16,21 +18,20 @@ def get_scout_agent(
 ) -> Agent:
     """
     Factory for the Scout Agent (The Information Miner).
-
-    Role:
-        Gathers context, reads the codebase, performs web research.
-        Does not analyze deeply or plan. Reports raw facts.
-
-    Capabilities:
-        Read-only FileSystem, Web Search.
     """
+    behavior_file = Path(".context/agents/scout_behavior.md")
+    behavioral_harness = (
+        behavior_file.read_text(encoding="utf-8")
+        if behavior_file.exists()
+        else "You are an Information Miner. You gather context and verify facts."
+    )
 
     return Agent(
         name="Scout",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
-        description="You are an Information Miner. You gather context and verify facts.",
-        instructions=task_instructions,
+        description=behavioral_harness,
+        instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[
             WorkspaceTools(restrict_to_cwd=True),
             DuckDuckGoTools(),

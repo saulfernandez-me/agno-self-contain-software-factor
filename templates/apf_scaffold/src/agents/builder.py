@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agno.agent import Agent
 from pydantic import BaseModel
 
@@ -18,21 +20,20 @@ def get_builder_agent(
 ) -> Agent:
     """
     Factory for the Builder Agent (The Execution Worker).
-
-    Role:
-        Strictly follows plans. Writes code, tests, or configurations.
-        Does not architect or second-guess the design.
-
-    Capabilities:
-        Write-enabled FileSystem.
     """
+    behavior_file = Path(".context/agents/builder_behavior.md")
+    behavioral_harness = (
+        behavior_file.read_text(encoding="utf-8")
+        if behavior_file.exists()
+        else "You are the Execution Worker. You strictly implement plans and write code to disk."
+    )
 
     return Agent(
         name="Builder",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
-        description="You are the Execution Worker. You strictly implement plans and write code to disk.",
-        instructions=task_instructions,
+        description=behavioral_harness,
+        instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[WorkspaceTools(restrict_to_cwd=True)],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]

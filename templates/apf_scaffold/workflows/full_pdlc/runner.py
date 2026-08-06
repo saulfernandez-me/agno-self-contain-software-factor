@@ -20,7 +20,19 @@ def run(task: str, domain: str):
 
     for _ in range(3):
         with wf.lane("agent"):
-            wf.run_agent(builder, plan.summary)
+            handoff_prompt = f"""
+            [PLAN SUMMARY]
+            {plan.summary}
+            
+            [TECHNICAL INSTRUCTIONS FROM PLANNER]
+            {plan.notes_for_next_agent}
+            
+            [FILES TO TOUCH]
+            {", ".join(plan.artifacts)}
+            
+            Execute the plan strictly.
+            """
+            wf.run_agent(builder, handoff_prompt)
         with wf.lane("code"):
             ok, _, err = run_shell_command("pytest")
         if not ok:
