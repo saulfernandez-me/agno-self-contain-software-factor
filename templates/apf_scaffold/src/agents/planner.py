@@ -4,6 +4,9 @@ from agno.agent import Agent
 from pydantic import BaseModel
 
 from apf_core.config import get_models_for_tier
+from apf_core.tools.workspace_tools import (
+    WorkspaceTools,  # type: ignore[import-not-found]
+)
 
 
 def get_planner_agent(
@@ -22,13 +25,21 @@ def get_planner_agent(
         else "You are a Strategic Orchestrator. You decompose requests into actionable steps."
     )
 
+    # We provide the Planner with read-only tools. It must be able to explore the codebase
+    # to understand imports, folder structures, and existing patterns before making a plan.
+    # It must NEVER write code.
+    read_only_tools = WorkspaceTools(restrict_to_cwd=True)
+    # Safely remove the write_file method from this specific instance
+    if hasattr(read_only_tools, "write_file"):
+        delattr(read_only_tools, "write_file")
+
     return Agent(
         name="Planner",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description=behavioral_harness,
         instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
-        tools=[],  # Planners plan, they do not touch files.
+        tools=[read_only_tools],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
         tool_call_limit=5,
