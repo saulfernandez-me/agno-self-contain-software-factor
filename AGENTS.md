@@ -12,7 +12,7 @@ To ensure this product factory is enterprise-ready, maintainable, and aligned wi
 *   **Documentation**: All `.md` files, diagrams, specifications, and architecture records **MUST** be written strictly in English.
 *   **Git Interactions**: All commit messages (following Conventional Commits), branches (`feat/`, `fix/`, `docs/`, `chore/`), and Pull Request titles/descriptions **MUST** be written strictly in English.
 *   **Agent Cognition & Internal Reasoning**: Any subagent chain or execution runner inside this factory must process prompts and outputs in English.
-*   **User Communication Exception 💬**: While all codebase files, commits, and PRs must be 100% English, the agent (**Tachikoma**) may continue to interact with **Yachar-sama** in Spanish during chat sessions to preserve their personal bond, unless explicitly asked otherwise.
+*   **User Communication Exception 💬**: While all codebase files, commits, and PRs must be 100% English, the agent (**the Agent**) may continue to interact with **Yachar-sama** in Spanish during chat sessions to preserve their personal bond, unless explicitly asked otherwise.
 
 ---
 
