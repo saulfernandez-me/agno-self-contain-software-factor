@@ -55,17 +55,47 @@ class ApfWorkflow(Workflow):
         if self.session_id:
             self._telemetry.end_session(self.session_id, status)
 
-    def run_agent(self, agent: Any, prompt: str) -> Any:
+    def run_agent(
+        self, agent: Any, prompt: str, skills: list[str] | None = None
+    ) -> Any:
         """
         Executes an agent with the Universal Two-Step Harness (Envelope Wrapper).
         Step 1: The agent executes cognitively without Pydantic constraints, avoiding tool-call hallucinations.
         Step 2: A FormatterAgent extracts the execution logs into the strict Pydantic Envelope.
+
+        Args:
+            agent: The Agno agent instance.
+            prompt: The specific task instruction (composite prompt).
+            skills: Optional list of skill names (e.g., ['python_expert']) to load from `.context/skills/`.
         """
+        from pathlib import Path
+
         from agno.agent import Agent
         from agno.models.utils import get_model
         from pydantic import BaseModel
 
         from apf_core.config import get_models_for_tier
+
+        # Load skills if requested
+        injected_skills = ""
+        if skills:
+            skill_texts = []
+            for skill in skills:
+                skill_path = Path(f".context/skills/{skill}.md")
+                if skill_path.exists():
+                    skill_texts.append(skill_path.read_text(encoding="utf-8"))
+                else:
+                    print(
+                        f"[APF] Warning: Skill '{skill}' requested but not found at {skill_path}."
+                    )
+            if skill_texts:
+                injected_skills = (
+                    "\n\n[INJECTED SKILLS & METHODOLOGIES]\n"
+                    + "\n\n---\n\n".join(skill_texts)
+                )
+
+        # Append skills to the prompt
+        final_prompt = prompt + injected_skills
 
         # Extract the expected schema from the agent's initialization
         expected_schema = getattr(agent, "output_schema", None)
@@ -89,7 +119,7 @@ class ApfWorkflow(Workflow):
                 )
 
                 # STEP 1: Cognitive Execution (Free-form text, safe tool usage)
-                cognitive_response = agent.run(prompt)
+                cognitive_response = agent.run(final_prompt)
                 cognitive_content = getattr(
                     cognitive_response, "content", str(cognitive_response)
                 )

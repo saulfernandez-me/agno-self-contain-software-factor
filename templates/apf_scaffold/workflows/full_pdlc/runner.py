@@ -32,7 +32,7 @@ def run(task: str, domain: str):
             
             Execute the plan strictly.
             """
-            wf.run_agent(builder, handoff_prompt)
+            wf.run_agent(builder, handoff_prompt, skills=["python_expert"])
         with wf.lane("code"):
             ok, _, err = run_shell_command("pytest")
         if not ok:
@@ -62,4 +62,4 @@ def run(task: str, domain: str):
         
         Write the PR description summarizing how the implementation solves the request.
         """
-        wf.run_agent(doc, doc_prompt)
+        wf.run_agent(doc, doc_prompt, skills=["conventional_commits"])
