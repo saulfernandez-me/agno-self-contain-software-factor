@@ -116,6 +116,16 @@ if __name__ == "__main__":
     console.print(f"[green]✓ Generated Runner:[/green] {runner_path}")
 
 
+@app.command("process")
+def process(
+    issue_number: int = typer.Argument(..., help="The GitHub Issue number to process."),
+) -> None:
+    """End-to-end processing of a GitHub Issue autonomously."""
+    from apf_core.daemon import process_issue
+
+    process_issue(issue_number)
+
+
 @generate_app.command("agent")
 def generate_agent(
     name: str = typer.Argument(..., help="Name of the agent (e.g., translator)"),
