@@ -19,6 +19,7 @@ class WorkspaceTools(Toolkit):
         self.register(self.list_directory_tree)
         self.register(self.read_file_snippet)
         self.register(self.search_keyword)
+        self.register(self.write_file)
 
     def _is_safe_path(self, target_path: str) -> bool:
         if not self.restrict_to_cwd:
@@ -105,6 +106,28 @@ class WorkspaceTools(Toolkit):
             return "".join(snippet)
         except OSError as e:
             return f"Error reading file snippet: {e!s}"
+
+    def write_file(self, path: str, content: str) -> str:
+        """
+        Writes content to a specific file. Creates parent directories if they don't exist.
+
+        Args:
+            path: The file path to write to.
+            content: The text content to write into the file.
+
+        Returns:
+            Success or error message.
+        """
+        if not self._is_safe_path(path):
+            return "Error: Path is outside the restricted working directory."
+
+        target = Path(path)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding="utf-8")
+            return f"Successfully wrote to {path}"
+        except OSError as e:
+            return f"Error writing file: {e!s}"
 
     def search_keyword(self, keyword: str, path: str = ".") -> str:
         """
