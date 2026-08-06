@@ -2,7 +2,7 @@ import sqlite3
 import time
 from pathlib import Path
 
-from asf_core.telemetry import TelemetryDB
+from apf_core.telemetry import TelemetryDB
 
 
 def test_telemetry_db_creation(tmp_path: Path) -> None:

@@ -1,6 +1,6 @@
 # 🏗️ Structure and Deployment (Stamping)
 
-This document outlines the physical directory structure of **ASF**, how it is packaged, and how it is deployed (stamped) into target repositories.
+This document outlines the physical directory structure of **APF**, how it is packaged, and how it is deployed (stamped) into target repositories.
 
 ---
 
@@ -13,33 +13,33 @@ In Dan Disler's SSSF, the framework is not a traditional dependency (like an npm
 
 ---
 
-## 2. Our ASF Approach: The Hybrid "Library + Scaffold" Model
+## 2. Our APF Approach: The Hybrid "Library + Scaffold" Model
 
-For ASF, because we are building on top of the **Agno SDK** and integrating with our own `pi-coding-agent` ecosystem, we will adopt a **Hybrid Model**:
+For APF, because we are building on top of the **Agno SDK** and integrating with our own `pi-coding-agent` ecosystem, we will adopt a **Hybrid Model**:
 
-1.  **The Core Engine (Library)**: The heavy lifting—base classes like `AsfWorkflow`, `EnvelopeBase`, and the telemetry/SQLite engine—will live in an installable Python package (`asf-core`). This ensures bug fixes to the engine benefit all repositories without manual copy-pasting.
-2.  **The Stamped Factory (Scaffold)**: The actual workflows (the graphs), the agent definitions, the gates, and the prompts will be **stamped** (copied) into the target repository. This gives the developer full control over the SDLC of that specific project.
+1.  **The Core Engine (Library)**: The heavy lifting—base classes like `ApfWorkflow`, `EnvelopeBase`, and the telemetry/SQLite engine—will live in an installable Python package (`apf-core`). This ensures bug fixes to the engine benefit all repositories without manual copy-pasting.
+2.  **The Stamped Factory (Scaffold)**: The actual workflows (the graphs), the agent definitions, the gates, and the prompts will be **stamped** (copied) into the target repository. This gives the developer full control over the PDLC of that specific project.
 
-### The ASF Repository Structure (Framework Development)
+### The APF Repository Structure (Framework Development)
 
-This repository (`saulfernandez-me/agno-software-factory`) is where we build the framework itself.
+This repository (`saulfernandez-me/agno-product-factory`) is where we build the framework itself.
 
 ```
-agno-software-factory/
+agno-product-factory/
 ├── README.md
 ├── docs/                       # Architectural documentation
 ├── src/
-│   └── asf_core/              # The pip-installable python package
+│   └── apf_core/              # The pip-installable python package
 │       ├── envelopes.py        # EnvelopeBase definition
 │       ├── gates.py            # Base gate runner logic
-│       ├── workflow.py         # AsfWorkflow extending Agno Workflow
+│       ├── workflow.py         # ApfWorkflow extending Agno Workflow
 │       └── telemetry/          # SQLite tracing and observability
 ├── templates/                  # The files that get stamped into a target repo
-│   ├── asf_workflows/         # Deterministic workflow scripts
+│   ├── apf_workflows/         # Deterministic workflow scripts
 │   ├── agents/                 # Default Agno agents (Scout, Builder, Reviewer)
 │   ├── gates/                  # Customizable assertion scripts
 │   ├── prompts/                # System and user prompts in Markdown
-│   └── asf.config.yaml        # Factory configuration
+│   └── apf.config.yaml        # Factory configuration
 ├── scripts/
 │   └── stamp.py                # The CLI script to inject the factory into a repo
 └── tests/                      # Framework tests
@@ -47,12 +47,12 @@ agno-software-factory/
 
 ---
 
-## 3. How a Target Repository Uses ASF
+## 3. How a Target Repository Uses APF
 
-When a developer wants to use ASF in a new project (e.g., `lmdi-backend`), they will run the stamping script.
+When a developer wants to use APF in a new project (e.g., `lmdi-backend`), they will run the stamping script.
 
 ```bash
-uv run https://raw.githubusercontent.com/saulfernandez-me/agno-software-factory/main/scripts/stamp.py
+uv run https://raw.githubusercontent.com/saulfernandez-me/agno-product-factory/main/scripts/stamp.py
 ```
 
 This will inject the **Scaffold** into the target repository:
@@ -61,7 +61,7 @@ This will inject the **Scaffold** into the target repository:
 lmdi-backend/ (Target Repo)
 ├── src/                        # The project's actual code
 ├── tests/                      # The project's tests
-├── .context/                      # The stamped ASF Factory
+├── .context/                      # The stamped APF Factory
 │   ├── workflows/              # e.g., build_and_test.py, research_feature.py
 │   ├── agents/                 # The Agno agents tailored for this repo
 │   ├── gates/                  # The specific acceptance criteria for this repo

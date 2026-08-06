@@ -1,0 +1,26 @@
+domain:
+  name: "software_engineering"
+  description: "You are operating in a modern Product Engineering environment. Focus on clean code, SOLID principles, and strict deterministic execution."
+
+model_tiers:
+  # HEAVY: The latest Pro models for intense cognitive tasks (architecture, complex code, adversarial review)
+  heavy:
+    primary: "google:gemini-2.5-pro"
+    fallbacks:
+      - "deepseek:deepseek-chat"
+  
+  # WORKHORSE: The best Light models for continuous, medium-complexity tasks
+  workhorse:
+    primary: "google:gemini-2.5-flash"
+    fallbacks:
+      - "deepseek:deepseek-chat"
+  
+  # LIGHTWEIGHT: The cheapest models for fast, low-complexity tasks (web search, reading)
+  lightweight:
+    primary: "google:gemini-2.5-flash"
+    fallbacks:
+      - "deepseek:deepseek-chat"
+
+limits:
+  correction_loop_max_attempts: 3
+  inner_tool_call_limit: 5

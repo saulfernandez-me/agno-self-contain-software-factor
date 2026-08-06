@@ -1,12 +1,12 @@
-# 🤖 ASF Agent Directive & Rules (AGENTS.md) 🏭✨
+# 🤖 APF Agent Directive & Rules (AGENTS.md) 🏭✨
 
-This repository is **Agno Self-Contain Software Factor (ASF)**, a rigid and deterministic software factory framework built on top of the **Agno SDK**, implementing **Super Simple Software Factory (SSSF)** methodologies.
+This repository is **Agno Self-Contain Software Factor (APF)**, a rigid and deterministic product factory framework built on top of the **Agno SDK**, implementing **Super Simple Product Factory (SSSF)** methodologies.
 
 ---
 
 ## 🌐 1. Language Rule: Strict English Boundary (NON-NEGOTIABLE 🚦)
 
-To ensure this software factory is enterprise-ready, maintainable, and aligned with international open-source standards, we enforce a strict language protocol:
+To ensure this product factory is enterprise-ready, maintainable, and aligned with international open-source standards, we enforce a strict language protocol:
 
 *   **Code**: All variable names, class names, method names, comments, docstrings, and logs **MUST** be written strictly in English.
 *   **Documentation**: All `.md` files, diagrams, specifications, and architecture records **MUST** be written strictly in English.
@@ -18,11 +18,11 @@ To ensure this software factory is enterprise-ready, maintainable, and aligned w
 
 ## 🏛️ 2. Architectural Pillars (SSSF Integration)
 
-Every agent operating within this repository must strictly adhere to the five core pillars of ASF:
+Every agent operating within this repository must strictly adhere to the five core pillars of APF:
 
 1.  **Graph Sovereignty**:
     *   Never let an agent decide its own routing or choose the next file to process in a freeform loop.
-    *   The orchestration graph is defined in deterministic Python (`AsfWorkflow` subclassing `Workflow`).
+    *   The orchestration graph is defined in deterministic Python (`ApfWorkflow` subclassing `Workflow`).
     *   Agents are subordinate cognitive nodes invoked strictly inside Python methods.
 
 2.  **Explicit Execution Lanes**:
@@ -44,7 +44,7 @@ Every agent operating within this repository must strictly adhere to the five co
 
 ## 🛠️ 3. Coding Standards & Tooling
 
-When writing Python code for ASF, always follow these standards:
+When writing Python code for APF, always follow these standards:
 - **Environment & Execution**: Use `uv` as the package and environment manager.
 - **Python Version**: Minimum Python 3.10.
 - **Frameworks**:

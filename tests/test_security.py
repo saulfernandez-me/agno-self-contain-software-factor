@@ -1,4 +1,4 @@
-from asf_core.security import enforce_permissions, get_git_snapshot
+from apf_core.security import enforce_permissions, get_git_snapshot
 
 
 def test_get_git_snapshot() -> None:
@@ -12,10 +12,10 @@ def test_enforce_permissions_clean(tmp_path) -> None:
     """If no new files changed, permissions should pass."""
     pre_snapshot: set[str] = set()
     # Mocking get_git_snapshot to return an empty set
-    import asf_core.security
+    import apf_core.security
 
-    original = asf_core.security.get_git_snapshot
-    asf_core.security.get_git_snapshot = lambda cwd=".": set()  # type: ignore[assignment]
+    original = apf_core.security.get_git_snapshot
+    apf_core.security.get_git_snapshot = lambda cwd=".": set()  # type: ignore[assignment]
 
     try:
         success, unauthorized = enforce_permissions(
@@ -24,16 +24,16 @@ def test_enforce_permissions_clean(tmp_path) -> None:
         assert success is True
         assert len(unauthorized) == 0
     finally:
-        asf_core.security.get_git_snapshot = original
+        apf_core.security.get_git_snapshot = original
 
 
 def test_enforce_permissions_unauthorized(tmp_path) -> None:
     """If a file changes that is not in the allowed list, it should fail and report it."""
     pre_snapshot: set[str] = set()
-    import asf_core.security
+    import apf_core.security
 
-    original = asf_core.security.get_git_snapshot
-    asf_core.security.get_git_snapshot = lambda cwd=".": {
+    original = apf_core.security.get_git_snapshot
+    apf_core.security.get_git_snapshot = lambda cwd=".": {
         "hacked_file.py",
         "allowed.txt",
     }  # type: ignore[assignment]
@@ -52,5 +52,5 @@ def test_enforce_permissions_unauthorized(tmp_path) -> None:
         assert "hacked_file.py" in unauthorized
         assert "allowed.txt" not in unauthorized
     finally:
-        asf_core.security.get_git_snapshot = original
+        apf_core.security.get_git_snapshot = original
         subprocess.run = original_run  # type: ignore[assignment]
