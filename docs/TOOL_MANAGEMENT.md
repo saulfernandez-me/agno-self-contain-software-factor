@@ -52,6 +52,7 @@ Create a new file in `src/apf_core/tools/` (e.g., `database_tools.py`):
 from agno.tools import Toolkit
 import sqlite3
 
+
 class DatabaseTools(Toolkit):
     def __init__(self, db_path: str):
         super().__init__(name="database_tools")
@@ -62,16 +63,20 @@ class DatabaseTools(Toolkit):
     def execute_read_query(self, query: str) -> str:
         """
         Executes a READ-ONLY SQL query against the database.
-        
+
         Args:
             query: The SELECT SQL query to execute.
-            
+
         Returns:
             The stringified rows returned by the database, or an error message.
         """
-        if "DROP" in query.upper() or "UPDATE" in query.upper() or "INSERT" in query.upper():
+        if (
+            "DROP" in query.upper()
+            or "UPDATE" in query.upper()
+            or "INSERT" in query.upper()
+        ):
             return "Error: Only SELECT queries are allowed."
-            
+
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -88,15 +93,21 @@ Open the agent factory (e.g., `src/agents/scout.py`) and add it to the `tools` a
 ```python
 from apf_core.tools.database_tools import DatabaseTools
 
-def get_scout_agent(domain_context: str, task_instructions: str, response_model: Type[BaseModel], model_tier: str = "lightweight") -> Agent:
+
+def get_scout_agent(
+    domain_context: str,
+    task_instructions: str,
+    response_model: Type[BaseModel],
+    model_tier: str = "lightweight",
+) -> Agent:
     # ...
     return Agent(
         name="Scout",
         # ...
         tools=[
-            WorkspaceTools(restrict_to_cwd=True), 
+            WorkspaceTools(restrict_to_cwd=True),
             DuckDuckGoTools(),
-            DatabaseTools(db_path="production.db")  # <-- Your new tool
+            DatabaseTools(db_path="production.db"),  # <-- Your new tool
         ],
         # ...
     )
