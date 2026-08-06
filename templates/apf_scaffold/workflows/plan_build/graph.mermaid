@@ -1,6 +1,10 @@
 graph TD
-    subgraph "LANE: agent"
-        PLAN["planner: Create Plan"]:::agent
-        BUILD["builder: Implement Code"]:::agent
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+
+    subgraph "🤖 LANE: AGENT"
+        PLAN["📐 planner: Create plan"]:::agent
+        BUILD["🏗️ builder: Implement code"]:::agent
     end
-    PLAN --> BUILD
+    
+    PLAN -->|PlanEnvelope| BUILD

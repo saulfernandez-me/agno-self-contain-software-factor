@@ -1,7 +1,11 @@
 graph TD
-    subgraph "LANE: agent"
-        BUILD["builder: Implement Code"]:::agent
-        REVIEW["reviewer: Audit Code"]:::agent
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+
+    subgraph "🤖 LANE: AGENT"
+        BUILD["🏗️ builder: Implement code"]:::agent
+        REV["🛡️ reviewer: Audit code"]:::agent
     end
-    BUILD --> REVIEW
-    REVIEW -.->|Rejects| BUILD
+    
+    BUILD -->|BuildEnvelope| REV
+    REV -.->|Fail: review notes| BUILD

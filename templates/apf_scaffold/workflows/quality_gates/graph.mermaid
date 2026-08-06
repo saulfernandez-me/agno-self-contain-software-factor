@@ -1,6 +1,10 @@
 graph TD
-    subgraph "LANE: code"
-        LINT["run_shell_command: ruff check"]:::code
-        TEST["run_shell_command: pytest"]:::code
+    %% APF Color Palette
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+
+    subgraph "⚙️ LANE: CODE"
+        LINT{"✅ run_shell: ruff check"}:::code
+        TEST{"✅ run_shell: pytest"}:::code
     end
-    LINT --> TEST
+    
+    LINT -->|Pass| TEST

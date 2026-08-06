@@ -1,25 +1,24 @@
 graph TD
-    %% Bug Fix Loop: Reproduce -> Fix -> Test
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+    classDef human fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff,rx:5px,ry:5px
 
-    subgraph "LANE: agent"
-        SCOUT["scout: Reproduce bug & gather logs"]:::agent
-        BUILD["builder: Apply fix"]:::agent
+    subgraph "🤖 LANE: AGENT"
+        SCOUT["🔍 scout: Reproduce bug & gather logs"]:::agent
+        BUILD["🏗️ builder: Apply fix"]:::agent
     end
 
-    subgraph "LANE: code"
-        GATE_REPRO["assert_file_not_empty: reproduction.json"]:::code
-        GATE_TEST["run_shell_command: pytest tests/test_bug.py"]:::code
+    subgraph "⚙️ LANE: CODE"
+        TEST{"✅ run_shell: pytest tests/test_bug.py"}:::code
     end
 
-    subgraph "LANE: engineer"
-        HITL["Escalation: Unfixable Bug"]:::human
+    subgraph "👤 LANE: ENGINEER"
+        HITL["⚠️ Escalation: Unfixable Bug"]:::human
     end
 
-    %% Execution Flow
-    SCOUT --> GATE_REPRO
-    GATE_REPRO -->|Pass| BUILD
-    BUILD --> GATE_TEST
+    SCOUT -->|ScoutEnvelope| BUILD
+    BUILD -->|BuildEnvelope| TEST
     
-    %% Correction Loop
-    GATE_TEST -.->|Fail: Re-prompt In-Session| BUILD
-    GATE_TEST -->|Fail: Max Attempts| HITL
+    TEST -.->|Fail: stderr| BUILD
+    TEST -->|Fail: Max Attempts| HITL

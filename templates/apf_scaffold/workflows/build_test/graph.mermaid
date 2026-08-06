@@ -1,9 +1,15 @@
 graph TD
-    subgraph "LANE: agent"
-        BUILD["builder: Implement Code"]:::agent
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+
+    subgraph "🤖 LANE: AGENT"
+        BUILD["🏗️ builder: Implement code"]:::agent
     end
-    subgraph "LANE: code"
-        TEST["run_shell_command: pytest"]:::code
+    
+    subgraph "⚙️ LANE: CODE"
+        TEST{"✅ run_shell: pytest"}:::code
     end
-    BUILD --> TEST
-    TEST -.->|Fail| BUILD
+    
+    BUILD -->|BuildEnvelope| TEST
+    TEST -.->|Fail: stderr| BUILD
