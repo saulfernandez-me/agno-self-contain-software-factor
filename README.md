@@ -69,6 +69,17 @@ uv run python -m apf_core.cli generate agent security_auditor
 
 ---
 
+## ⚠️ System Prerequisites
+
+Before stamping or running APF on a new machine or CI/CD pipeline, your host environment **MUST** have the following installed:
+1. **Python 3.10+**
+2. **[uv](https://docs.astral.sh/uv/)**: The ultra-fast Python package manager used for isolated execution.
+3. **[GitHub CLI (gh)](https://cli.github.com/)**: Required for the GitOps Daemon to fetch issues and create PRs. You **must** be authenticated (`gh auth login`).
+
+👉 **[Read the Prerequisites Guide for installation details](docs/PREREQUISITES.md)**
+
+---
+
 ## 🛠️ Getting Started
 
 ### Installation
