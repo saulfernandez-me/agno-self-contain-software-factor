@@ -126,21 +126,25 @@ def process_issue(issue_number: int) -> None:
             # Run the workflow
             task_instruction = f"Issue Title: {title}\nIssue Body:\n{body}"
 
-            # Assuming the runner has a function named run_full_pdlc or run_workflow
-            # We standardize calling convention. Let's look for a function that starts with 'run_'
-            run_func = None
-            for attr_name in dir(runner_module):
-                if attr_name.startswith("run_"):
-                    run_func = getattr(runner_module, attr_name)
-                    break
-
-            if run_func:
+            # Since the component-based refactor, the entrypoint is simply 'run'
+            if hasattr(runner_module, "run"):
+                run_func = getattr(runner_module, "run")
                 run_func(task_instruction, domain_context)
             else:
-                console.print(
-                    "[red]❌ Could not find a run_* function in the workflow script.[/red]"
-                )
-                sys.exit(1)
+                # Fallback for older flat scripts
+                run_func = None
+                for attr_name in dir(runner_module):
+                    if attr_name.startswith("run_") and attr_name != "run_shell_command":
+                        run_func = getattr(runner_module, attr_name)
+                        break
+
+                if run_func:
+                    run_func(task_instruction, domain_context)
+                else:
+                    console.print(
+                        "[red]❌ Could not find an entrypoint ('run' function) in the workflow script.[/red]"
+                    )
+                    sys.exit(1)
 
     except (OSError, ValueError, TypeError, KeyError) as e:
         console.print(f"[red]❌ Workflow execution failed: {e}[/red]")
