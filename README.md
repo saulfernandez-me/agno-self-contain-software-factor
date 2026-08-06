@@ -18,6 +18,19 @@ While **Agno** provides an incredible set of low-level agentic primitives (`Agen
 
 ---
 
+## 🧠 The 5-Layer Cognitive Topology
+
+APF eliminates "Prompt Dilution" and "Handoff Amnesia" by dynamically injecting 5 decoupled layers of context into an agent at runtime:
+1. **Identity:** Hardcoded archetype rules and physical Tool limits.
+2. **Ecosystem:** The global repository rules loaded from `AI.md`.
+3. **Original Intent:** The initial GitHub Issue, propagated to all downstream agents.
+4. **Current State:** The structured Pydantic `Envelope` passed from the previous agent.
+5. **Task-Specific Skills:** Modular methodologies (e.g., `conventional_commits`) injected on-demand.
+
+👉 **[Read the deep dive into the Cognitive Topology](docs/COGNITIVE_TOPOLOGY.md)**
+
+---
+
 ## 🌟 Key Features (v1.0)
 
 ### 🚀 1. The Inception Engine (`stamp.py`)
