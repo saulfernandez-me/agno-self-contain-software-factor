@@ -1,4 +1,4 @@
-# 🤖 Agno Self-Contain Software Factor (APF) 🏭✨
+# 🤖 Agno Software Factor (APF) 🏭✨
 
 > **APF** is a rigid, reliable, and deterministic Product Factory framework built on top of the **Agno SDK**, implementing the core tenets of the **Super Simple Product Factory (SSSF)** philosophy, expanded with advanced Platform Engineering standards.
 
