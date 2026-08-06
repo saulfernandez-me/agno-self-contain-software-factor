@@ -63,8 +63,8 @@ def get_models_for_tier(tier_name: str, config: ApfConfig | None = None) -> list
 
     # Hardcoded safety nets if the YAML is missing tier definitions
     if tier_name == "heavy":
-        return ["openai:gpt-4o", "anthropic:claude-3-5-sonnet"]
+        return ["google:gemini-3.1-pro-preview", "anthropic:claude-3-5-sonnet"]
     elif tier_name == "workhorse":
-        return ["openai:gpt-5.6-terra", "google:gemini-1.5-pro"]
+        return ["google:gemini-3.5-flash", "openai:gpt-4o-mini"]
     else:  # lightweight or unknown
-        return ["google:gemini-1.5-flash"]
+        return ["google:gemini-2.5-flash"]

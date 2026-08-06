@@ -5,13 +5,13 @@ domain:
 model_tiers:
   # HEAVY: The latest Pro models for intense cognitive tasks (architecture, complex code, adversarial review)
   heavy:
-    primary: "google:gemini-2.5-pro"
+    primary: "google:gemini-3.1-pro-preview"
     fallbacks:
       - "deepseek:deepseek-chat"
   
   # WORKHORSE: The best Light models for continuous, medium-complexity tasks
   workhorse:
-    primary: "google:gemini-2.5-flash"
+    primary: "google:gemini-3.5-flash"
     fallbacks:
       - "deepseek:deepseek-chat"
   
