@@ -1,6 +1,6 @@
-# 🤖 ASSF Agent Directive & Rules (AGENTS.md) 🏭✨
+# 🤖 ASF Agent Directive & Rules (AGENTS.md) 🏭✨
 
-This repository is **Agno Self-Contain Software Factor (ASSF)**, a rigid and deterministic software factory framework built on top of the **Agno SDK**, implementing **Super Simple Software Factory (SSSF)** methodologies.
+This repository is **Agno Self-Contain Software Factor (ASF)**, a rigid and deterministic software factory framework built on top of the **Agno SDK**, implementing **Super Simple Software Factory (SSSF)** methodologies.
 
 ---
 
@@ -18,11 +18,11 @@ To ensure this software factory is enterprise-ready, maintainable, and aligned w
 
 ## 🏛️ 2. Architectural Pillars (SSSF Integration)
 
-Every agent operating within this repository must strictly adhere to the five core pillars of ASSF:
+Every agent operating within this repository must strictly adhere to the five core pillars of ASF:
 
 1.  **Graph Sovereignty**:
     *   Never let an agent decide its own routing or choose the next file to process in a freeform loop.
-    *   The orchestration graph is defined in deterministic Python (`AssfWorkflow` subclassing `Workflow`).
+    *   The orchestration graph is defined in deterministic Python (`AsfWorkflow` subclassing `Workflow`).
     *   Agents are subordinate cognitive nodes invoked strictly inside Python methods.
 
 2.  **Explicit Execution Lanes**:
@@ -44,7 +44,7 @@ Every agent operating within this repository must strictly adhere to the five co
 
 ## 🛠️ 3. Coding Standards & Tooling
 
-When writing Python code for ASSF, always follow these standards:
+When writing Python code for ASF, always follow these standards:
 - **Environment & Execution**: Use `uv` as the package and environment manager.
 - **Python Version**: Minimum Python 3.10.
 - **Frameworks**:

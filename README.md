@@ -1,6 +1,6 @@
-# 🤖 Agno Self-Contain Software Factor (ASSF) 🏭✨
+# 🤖 Agno Self-Contain Software Factor (ASF) 🏭✨
 
-> **ASSF** is a rigid, reliable, and deterministic Software Factory framework built on top of the **Agno SDK**, implementing the core tenets of the **Super Simple Software Factory (SSSF)** philosophy, expanded with advanced Platform Engineering standards.
+> **ASF** is a rigid, reliable, and deterministic Software Factory framework built on top of the **Agno SDK**, implementing the core tenets of the **Super Simple Software Factory (SSSF)** philosophy, expanded with advanced Platform Engineering standards.
 
 ---
 
@@ -8,9 +8,9 @@
 
 While **Agno** provides an incredible set of low-level agentic primitives (`Agents`, `Teams`, `Workflows`, `Tools`), it behaves as a blank canvas. **SSSF** provides a dogmatic set of constraints to prevent AI from failing unpredictably. 
 
-**ASSF** bridges this gap, providing a robust, production-ready framework that ensures:
+**ASF** bridges this gap, providing a robust, production-ready framework that ensures:
 
-1. **Sovereignty of Code**: The execution graph is governed by deterministic Python code (`AssfWorkflow`), never by LLM cognition.
+1. **Sovereignty of Code**: The execution graph is governed by deterministic Python code (`AsfWorkflow`), never by LLM cognition.
 2. **Clear Lanes of Execution**: Tasks are strictly partitioned into `agent` (cognitive), `code` (deterministic/bash), and `engineer` (human-in-the-loop) lanes.
 3. **Physical Contracts (JSON Envelopes)**: Handoffs between phases are done strictly through structured Pydantic-validated JSON files (`EnvelopeBase`).
 4. **Post-Phase Gates**: Code assertions (linters, test suites, git diffs) verify the output of a phase before letting the pipeline progress.
@@ -21,29 +21,29 @@ While **Agno** provides an incredible set of low-level agentic primitives (`Agen
 ## 🌟 Key Features (v1.0)
 
 ### 🚀 1. The Inception Engine (`stamp.py`)
-ASSF is deployed via "stamping". Run `uv run assf stamp` in your target repository.
+ASF is deployed via "stamping". Run `uv run asf stamp` in your target repository.
 - **Greenfield**: If the repo is empty, an interactive agent interviews you and generates industry-standard `catalog-info.yaml` and a high-density `AI.md` file.
 - **Brownfield**: If the repo has code, the agent reads the `README.md` and deduces the context automatically.
 
 ### 🧠 2. The Universal Archetypes & 3-Tier Strategy
-ASSF includes 6 immutable agent archetypes (`scout`, `planner`, `structurer`, `builder`, `reviewer`, `documenter`). 
-Instead of hardcoding models, ASSF uses `assf.yaml` to map tasks to a **3-Tier Model Pool** (`heavy`, `workhorse`, `lightweight`). If a primary model fails, the engine automatically routes to the next fallback model.
+ASF includes 6 immutable agent archetypes (`scout`, `planner`, `structurer`, `builder`, `reviewer`, `documenter`). 
+Instead of hardcoding models, ASF uses `asf.yaml` to map tasks to a **3-Tier Model Pool** (`heavy`, `workhorse`, `lightweight`). If a primary model fails, the engine automatically routes to the next fallback model.
 
 ### 🛡️ 3. Envelope Wrapper & Git Security
-- **Universal Two-Step Harness**: To prevent complex models from hallucinating tool parameters when generating JSON, ASSF separates execution (free-form cognition with tools) from formatting (a lightweight agent extracting the Pydantic JSON).
+- **Universal Two-Step Harness**: To prevent complex models from hallucinating tool parameters when generating JSON, ASF separates execution (free-form cognition with tools) from formatting (a lightweight agent extracting the Pydantic JSON).
 - **Git Rollback Security**: The `security.py` module takes a Git snapshot before an agent runs. If the agent modifies files it wasn't authorized to touch, the phase fails and the repo is instantly reverted.
 
 ### 📊 4. Real-time SQLite Telemetry
 Every lane execution and agent run is logged in real-time to a WAL-mode SQLite database (`.context/data/telemetry.db`), capturing duration, tokens, and model routing for dashboard integration.
 
-### 🛠️ 5. Generative CLI (`assf-cli`)
+### 🛠️ 5. Generative CLI (`asf-cli`)
 Stop writing boilerplate. Use the CLI to scaffold your pipelines:
 ```bash
 # Generate a new Mermaid diagram and its Python runner
-uv run python -m assf_core.cli generate workflow deploy_fix --agents scout,builder,reviewer
+uv run python -m asf_core.cli generate workflow deploy_fix --agents scout,builder,reviewer
 
 # Generate a new Pydantic Envelope and Agno Agent class
-uv run python -m assf_core.cli generate agent security_auditor
+uv run python -m asf_core.cli generate agent security_auditor
 ```
 
 ---
@@ -53,7 +53,7 @@ uv run python -m assf_core.cli generate agent security_auditor
 ### Installation
 Run the following command inside your target repository to stamp the factory:
 ```bash
-uv run https://raw.githubusercontent.com/saulfernandez-me/agno-self-contain-software-factor/main/scripts/stamp.py --target .
+uv run https://raw.githubusercontent.com/saulfernandez-me/agno-software-factory/main/scripts/stamp.py --target .
 ```
 
 ### Next Steps

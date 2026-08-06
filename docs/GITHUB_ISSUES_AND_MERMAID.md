@@ -1,12 +1,12 @@
 # 🧬 Visual & Issue-Driven Engineering: Mermaid.js & GitHub Issues Framework
 
-This document defines the visual execution and task-driven framework for **Agno Self-Contain Software Factor (ASSF)**. It details how we integrate **Mermaid.js** diagrams to drive workflow creation and how we structure **GitHub Issues** to act as the primary control plane for autonomous agents.
+This document defines the visual execution and task-driven framework for **Agno Self-Contain Software Factor (ASF)**. It details how we integrate **Mermaid.js** diagrams to drive workflow creation and how we structure **GitHub Issues** to act as the primary control plane for autonomous agents.
 
 ---
 
 ## 🎨 1. Mermaid-Driven Workflows: Code-to-Graph & Graph-to-Code
 
-A major innovation of ASSF over standard SSSF is the bidirectional integration of **Mermaid.js** diagrams within the Python workflow execution engine. Instead of treating diagrams purely as static documentation, ASSF uses them as **active execution blueprints**.
+A major innovation of ASF over standard SSSF is the bidirectional integration of **Mermaid.js** diagrams within the Python workflow execution engine. Instead of treating diagrams purely as static documentation, ASF uses them as **active execution blueprints**.
 
 ```
   +───────────────────────────────────────────+
@@ -14,9 +14,9 @@ A major innovation of ASSF over standard SSSF is the bidirectional integration o
   |             (workflow.mermaid)            |
   +─────────────────────┬─────────────────────+
                         │
-                        ▼ [ASSF Compiler]
+                        ▼ [ASF Compiler]
   +───────────────────────────────────────────+
-  |             AssfWorkflow Graph            |
+  |             AsfWorkflow Graph            |
   |         (Deterministic Python Loop)       |
   +─────────────────────┬─────────────────────+
                         │
@@ -28,7 +28,7 @@ A major innovation of ASSF over standard SSSF is the bidirectional integration o
 ```
 
 ### Pattern A: Graph-to-Code (Blueprints Definition)
-Instead of forcing engineers to modify complex Python files to change a pipeline's steps, ASSF includes a `MermaidParser` that compiles a standard Mermaid diagram into a runnable `AssfWorkflow`:
+Instead of forcing engineers to modify complex Python files to change a pipeline's steps, ASF includes a `MermaidParser` that compiles a standard Mermaid diagram into a runnable `AsfWorkflow`:
 
 1.  **The Blueprint File (`workflow.mermaid`)**:
     ```mermaid
@@ -46,17 +46,17 @@ Instead of forcing engineers to modify complex Python files to change a pipeline
         C --> D
     ```
 2.  **The Compilation**:
-    The `AssfWorkflow` class reads this Mermaid file, parses the nodes and edges, validates that no cognitive agent nodes (`:::agent`) sit in code lanes (`subgraph "LANE: code"`), and instantiates the sequential steps in Python.
+    The `AsfWorkflow` class reads this Mermaid file, parses the nodes and edges, validates that no cognitive agent nodes (`:::agent`) sit in code lanes (`subgraph "LANE: code"`), and instantiates the sequential steps in Python.
 3.  **The Benefit**: Changing the workflow order or injecting a new validation gate is as simple as adding a line to the Mermaid text.
 
 ### Pattern B: Code-to-Graph (Interactive Trace)
-When a workflow runs, the `AssfWorkflow` tracer writes a live Mermaid trace file (`.context/runs/<run_id>/trace.mermaid`) reflecting:
+When a workflow runs, the `AsfWorkflow` tracer writes a live Mermaid trace file (`.context/runs/<run_id>/trace.mermaid`) reflecting:
 *   **Green Nodos**: Completed phases.
 *   **Yellow Nodos**: Active running phases.
 *   **Red Nodos**: Failed phases currently in the **Correction Loop**.
 *   **Transitions**: Labeled with token counts and latency (e.g., `A -->|3.2k tokens / 1.4s| B`).
 
-This trace is read by the ASSF UI to render a gorgeous, visual status diagram in real-time.
+This trace is read by the ASF UI to render a gorgeous, visual status diagram in real-time.
 
 ---
 
@@ -65,7 +65,7 @@ This trace is read by the ASSF UI to render a gorgeous, visual status diagram in
 To allow agents to operate autonomously, we replace human project boards with a strict **GitHub Issues Interface**. GitHub Issues act as the input queue, tracking system, and communication channel.
 
 ```
-[Issue Created] ──> [Label: assf:backlog] ──> [Agent Triggers] ──> [Branch Created]
+[Issue Created] ──> [Label: asf:backlog] ──> [Agent Triggers] ──> [Branch Created]
                                                                         │
 [PR Created] ◄── [Correction Loop Passes] ◄── [Gates Evaluated] ◄── [Agent Writes Code]
 ```
@@ -73,13 +73,13 @@ To allow agents to operate autonomously, we replace human project boards with a 
 ### A. Issue Templates (Templatization)
 We enforce strict Markdown issue templates under `.github/issue_template/` to structure inputs for the agents.
 
-#### Template: `.github/issue_template/assf-feature.md`
+#### Template: `.github/issue_template/asf-feature.md`
 ```markdown
 ---
 name: "🚀 Feature Implementation"
 about: "Request a new feature for the agent to design, build, and test."
 title: "feat: <title>"
-labels: ["assf:backlog"]
+labels: ["asf:backlog"]
 ---
 
 ### 📝 Scope Description
@@ -106,39 +106,39 @@ We use GitHub Labels to manage the execution state of the issue board.
 
 | Label | Phase | Executing Agent | Description |
 | :--- | :--- | :--- | :--- |
-| `assf:backlog` | Queue | None | The issue is ready for processing. |
-| `assf:planning` | Recon & Design | `Planner` | The agent is creating a tech design and mapping files. |
-| `assf:implementing`| Coding | `Builder` | The agent is writing source code and tests. |
-| `assf:testing` | Verification | `Assertion Gates` | Automated gates are running unit tests and linters. |
-| `assf:reviewing` | Human Gate | `Reviewer` (Human) | The PR is open and awaiting code review or approval. |
-| `assf:blocked` | Escalation | None | Gates failed `max_attempts` or require manual human fix. |
-| `assf:done` | Closed | None | PR is merged and code is live. |
+| `asf:backlog` | Queue | None | The issue is ready for processing. |
+| `asf:planning` | Recon & Design | `Planner` | The agent is creating a tech design and mapping files. |
+| `asf:implementing`| Coding | `Builder` | The agent is writing source code and tests. |
+| `asf:testing` | Verification | `Assertion Gates` | Automated gates are running unit tests and linters. |
+| `asf:reviewing` | Human Gate | `Reviewer` (Human) | The PR is open and awaiting code review or approval. |
+| `asf:blocked` | Escalation | None | Gates failed `max_attempts` or require manual human fix. |
+| `asf:done` | Closed | None | PR is merged and code is live. |
 
 ### C. The Agent Workflow Loop on GitHub
 
 A dedicated runner (or cron job) executes the following Python loop to process tasks:
 
-1.  **Poll**: Query GitHub API for any open issues labeled `assf:backlog`.
-2.  **Assign & Transition**: Assign the issue to the agent, replace the `assf:backlog` label with `assf:planning`.
+1.  **Poll**: Query GitHub API for any open issues labeled `asf:backlog`.
+2.  **Assign & Transition**: Assign the issue to the agent, replace the `asf:backlog` label with `asf:planning`.
 3.  **Branch Isolation**: Create a clean Git branch locally: `git checkout -b feat/issue-<id>-<slug>`.
 4.  **Execute Workflow**:
     *   **Phase 1 (Plan)**: Run `Planner` agent on the issue description. Outputs `plan.md` (Envelope).
     *   **Phase 2 (Build)**: Run `Builder` agent on the plan. Outputs changes.
     *   **Phase 3 (Verify)**: Run local Gates (linter, tests).
-        *   *If Fail*: Trigger the **Correction Loop** in-session. If `attempts > max`, remove label, add `assf:blocked`, post error trace as a comment on the issue, and halt.
+        *   *If Fail*: Trigger the **Correction Loop** in-session. If `attempts > max`, remove label, add `asf:blocked`, post error trace as a comment on the issue, and halt.
 5.  **Deliver**: Once gates pass, commit changes, push the branch, and open a Pull Request.
 6.  **Comment**: Add an execution summary comment on the issue:
     *   Cost breakdown ($).
     *   Total tokens consumed.
     *   List of files touched.
     *   Test runner console snippet showing greens.
-7.  **Final Transition**: Relabel the issue as `assf:reviewing` and link the PR.
+7.  **Final Transition**: Relabel the issue as `asf:reviewing` and link the PR.
 
 ---
 
 ## 🎨 3. Dashboard Spec (The Observability UI)
 
-To bring SSSF's amazing visual telemetry into Agno, we define the **ASSF Dashboard**:
+To bring SSSF's amazing visual telemetry into Agno, we define the **ASF Dashboard**:
 
 *   **Backend**: A lightweight **FastAPI** server running inside `.context/` that polls `.context/data/telemetry.db` (SQLite WAL mode).
 *   **Frontend**: A responsive Tailwind Dashboard served on `http://localhost:4600`.

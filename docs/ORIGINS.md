@@ -1,12 +1,12 @@
-# 🧬 Origins and Technical Lineage of ASSF
+# 🧬 Origins and Technical Lineage of ASF
 
-This document records the design genealogy and conceptual origins of the **Agno Self-Contain Software Factor (ASSF)**. It honors both our internal engineering history and the open-source breakthroughs that shaped this architecture.
+This document records the design genealogy and conceptual origins of the **Agno Self-Contain Software Factor (ASF)**. It honors both our internal engineering history and the open-source breakthroughs that shaped this architecture.
 
 ---
 
 ## 🧬 1. The Internal Lineage: A "Framework for Creating Frameworks"
 
-Before ASSF was conceived, we spent a significant amount of engineering effort building and refining a highly custom **AI Workflow Design Framework**. This was born from our daily operations managing multiple enterprise and personal domains (such as *La Mascota de Ibiza (LMDI)*, *MediaMarktSaturn (MMS)*, and *Technomad*).
+Before ASF was conceived, we spent a significant amount of engineering effort building and refining a highly custom **AI Workflow Design Framework**. This was born from our daily operations managing multiple enterprise and personal domains (such as *La Mascota de Ibiza (LMDI)*, *MediaMarktSaturn (MMS)*, and *Technomad*).
 
 ### The Journey of `pi-subagents` and Workflow Meta-Tooling
 Our initial work focused on taming the chaos of LLM execution within terminal sessions. We engineered a robust system of **specialized subagents** coordinated through a central harness. 
@@ -37,7 +37,7 @@ Dan Disler's work introduced a dogmatic set of opinions on how to build AI-drive
 
 ## 🤝 3. The Synthesis: Fusing Our Meta-Framework with SSSF over Agno
 
-**ASSF** represents the beautiful marriage of these two worlds:
+**ASF** represents the beautiful marriage of these two worlds:
 
 ```
 ┌──────────────────────────────────────┐     ┌──────────────────────────────────────┐
@@ -51,7 +51,7 @@ Dan Disler's work introduced a dogmatic set of opinions on how to build AI-drive
                                          │
                                          ▼
                      ┌──────────────────────────────────────┐
-                     │              ASSF CORE               │
+                     │              ASF CORE               │
                      │  - Native Python over Agno SDK       │
                      │  - Strict Pydantic Data Boundaries   │
                      │  - Built-in Local Verification Gates │

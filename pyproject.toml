@@ -1,5 +1,5 @@
 [project]
-name = "agno-self-contain-software-factor"
+name = "agno-software-factory"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-assf = "assf_core.cli:app"
+asf = "asf_core.cli:app"
 
 [dependency-groups]
 dev = [

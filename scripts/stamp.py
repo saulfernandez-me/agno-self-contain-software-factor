@@ -12,8 +12,8 @@
 # ///
 
 """
-stamp.py - The ASSF Deployment Script and Inception Engine.
-Injects the ASSF scaffold into the target repository and generates PROJECT_IDENTITY (AI.md).
+stamp.py - The ASF Deployment Script and Inception Engine.
+Injects the ASF scaffold into the target repository and generates PROJECT_IDENTITY (AI.md).
 """
 
 import argparse
@@ -31,7 +31,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
-REPO_URL = "https://github.com/saulfernandez-me/agno-self-contain-software-factor/archive/refs/heads/main.tar.gz"
+REPO_URL = "https://github.com/saulfernandez-me/agno-software-factory/archive/refs/heads/main.tar.gz"
 
 
 class InceptionOutput(BaseModel):
@@ -47,27 +47,27 @@ class InceptionOutput(BaseModel):
 
 def fetch_scaffold(target_dir: Path) -> Path:
     """Fetches the scaffold templates. If developing locally, uses local paths. Otherwise downloads from GitHub."""
-    # Check if running from within the assf repository itself (local dev)
+    # Check if running from within the asf repository itself (local dev)
     local_scaffold = (
-        Path(__file__).resolve().parent.parent / "templates" / "assf_scaffold"
+        Path(__file__).resolve().parent.parent / "templates" / "asf_scaffold"
     )
     if local_scaffold.exists():
-        console.print("[cyan]ℹ Using local templates/assf_scaffold[/cyan]")
+        console.print("[cyan]ℹ Using local templates/asf_scaffold[/cyan]")
         return local_scaffold
 
     # Otherwise, download the tarball (e.g., if run via `uv run https://...`)
-    console.print("[cyan]ℹ Downloading ASSF scaffold from GitHub...[/cyan]")
-    tar_path = target_dir / "assf_download.tar.gz"
-    extract_dir = target_dir / ".assf_tmp_extract"
+    console.print("[cyan]ℹ Downloading ASF scaffold from GitHub...[/cyan]")
+    tar_path = target_dir / "asf_download.tar.gz"
+    extract_dir = target_dir / ".asf_tmp_extract"
 
     urllib.request.urlretrieve(REPO_URL, tar_path)
     with tarfile.open(tar_path, "r:gz") as tar:
         tar.extractall(path=extract_dir)
 
     os.remove(tar_path)
-    # The extracted folder is typically named agno-self-contain-software-factor-main
-    extracted_repo = extract_dir / "agno-self-contain-software-factor-main"
-    return extracted_repo / "templates" / "assf_scaffold"
+    # The extracted folder is typically named agno-software-factory-main
+    extracted_repo = extract_dir / "agno-software-factory-main"
+    return extracted_repo / "templates" / "asf_scaffold"
 
 
 def get_ai_template(scaffold_path: Path) -> str:
@@ -79,7 +79,7 @@ def get_ai_template(scaffold_path: Path) -> str:
 
 def run_inception_engine(target_dir: Path, scaffold_path: Path) -> None:
     """Runs the inception engine to generate AI.md and catalog-info.yaml."""
-    console.print("[bold magenta]🚀 Booting ASSF Inception Engine...[/bold magenta]")
+    console.print("[bold magenta]🚀 Booting ASF Inception Engine...[/bold magenta]")
 
     readme_path = target_dir / "README.md"
     existing_catalog = target_dir / "catalog-info.yaml"
@@ -89,7 +89,7 @@ def run_inception_engine(target_dir: Path, scaffold_path: Path) -> None:
 
     agent = Agent(
         name="InceptionAgent",
-        description="You are a Staff Platform Engineer onboarding a new project into the ASSF framework.",
+        description="You are a Staff Platform Engineer onboarding a new project into the ASF framework.",
         instructions=f"""
 Your task is to generate two critical files:
 1. `catalog-info.yaml` (Backstage standard format)
@@ -142,27 +142,31 @@ Output the content matching the Pydantic schema perfectly.
     console.print("[cyan]⏳ Generating identity files...[/cyan]")
     try:
         response = agent.run(prompt)
-        
+
         # Agno 2.8.7 behavior: structured output might be in .content directly
         output = None
-        if hasattr(response, 'data') and response.data is not None:
+        if hasattr(response, "data") and response.data is not None:
             output = response.data
-        elif hasattr(response, 'content') and isinstance(response.content, BaseModel):
+        elif hasattr(response, "content") and isinstance(response.content, BaseModel):
             output = response.content
-            
+
         if output is None:
-            raise ValueError(f"Agent failed to generate structured data. Content: {getattr(response, 'content', 'None')}")
-            
+            raise ValueError(
+                f"Agent failed to generate structured data. Content: {getattr(response, 'content', 'None')}"
+            )
+
         output_cast: InceptionOutput = output  # type: ignore
 
         # Write AI.md
         ai_md_path = target_dir / "AI.md"
         ai_md_path.write_text(output_cast.ai_md_content, encoding="utf-8")
         console.print(f"[green]✓ Wrote {ai_md_path}[/green]")
-        
+
         # Write catalog-info.yaml
         if not existing_catalog.exists():
-            existing_catalog.write_text(output_cast.catalog_info_content, encoding="utf-8")
+            existing_catalog.write_text(
+                output_cast.catalog_info_content, encoding="utf-8"
+            )
             console.print(f"[green]✓ Wrote {existing_catalog}[/green]")
     except (OSError, ValueError, AttributeError) as e:
         console.print(f"[red]❌ Inception Engine failed to generate files: {e}[/red]")
@@ -173,7 +177,7 @@ Output the content matching the Pydantic schema perfectly.
 
 def stamp_files(scaffold_path: Path, target_dir: Path) -> None:
     """Copies files from scaffold to target_dir."""
-    console.print("[cyan]⏳ Stamping ASSF scaffold into repository...[/cyan]")
+    console.print("[cyan]⏳ Stamping ASF scaffold into repository...[/cyan]")
 
     # We want to copy everything EXCEPT AI_TEMPLATE.md (which is handled by Inception)
     for item in scaffold_path.iterdir():
@@ -197,7 +201,7 @@ def stamp_files(scaffold_path: Path, target_dir: Path) -> None:
 def update_gitignore(target_dir: Path) -> None:
     """Ensures .context/data/telemetry.db and .env are gitignored."""
     gitignore = target_dir / ".gitignore"
-    entries = ["\n# ASSF", ".env", ".context/data/"]
+    entries = ["\n# ASF", ".env", ".context/data/"]
 
     if gitignore.exists():
         content = gitignore.read_text()
@@ -212,10 +216,10 @@ def update_gitignore(target_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="ASSF Deployment Script (Stamper & Inception Engine)"
+        description="ASF Deployment Script (Stamper & Inception Engine)"
     )
     parser.add_argument(
-        "--target", default=".", help="Target directory to stamp ASSF into."
+        "--target", default=".", help="Target directory to stamp ASF into."
     )
     args = parser.parse_args()
 
@@ -229,16 +233,16 @@ def main() -> None:
         update_gitignore(target_dir)
         run_inception_engine(target_dir, scaffold_path)
 
-        console.print("\n[bold green]🎉 ASSF Installation Complete! 🎉[/bold green]")
+        console.print("\n[bold green]🎉 ASF Installation Complete! 🎉[/bold green]")
         console.print("""
 [bold yellow]Next Steps:[/bold yellow]
 1. Rename [cyan].env.example[/cyan] to [cyan].env[/cyan] and add your API keys.
 2. Review the generated [cyan]AI.md[/cyan] and refine your Architectural Invariants.
-3. Start using your ASSF agents via [cyan]uv run assf generate workflow ...[/cyan] or running your predefined workflows!
+3. Start using your ASF agents via [cyan]uv run asf generate workflow ...[/cyan] or running your predefined workflows!
 """)
     finally:
         # Cleanup temporary extraction directory if it was downloaded
-        tmp_extract = target_dir / ".assf_tmp_extract"
+        tmp_extract = target_dir / ".asf_tmp_extract"
         if tmp_extract.exists():
             shutil.rmtree(tmp_extract)
 
