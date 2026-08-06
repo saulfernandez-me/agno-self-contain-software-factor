@@ -1,8 +1,14 @@
 graph TD
-    subgraph "LANE: code"
-        DIFF["run_shell_command: git diff"]:::code
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+
+    subgraph "⚙️ LANE: CODE"
+        DIFF["✅ run_shell: git diff"]:::code
     end
-    subgraph "LANE: agent"
-        DOCS["documenter: Write PR"]:::agent
+    
+    subgraph "🤖 LANE: AGENT"
+        DOC["📝 documenter: Write PR description"]:::agent
     end
-    DIFF --> DOCS
+    
+    DIFF -->|Diff output| DOC

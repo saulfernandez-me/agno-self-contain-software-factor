@@ -1,14 +1,20 @@
 graph TD
-    subgraph "LANE: agent"
-        PLAN["planner: Create Plan"]:::agent
-        BUILD["builder: Implement Code"]:::agent
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+
+    subgraph "🤖 LANE: AGENT"
+        PLAN["📐 planner: Create plan"]:::agent
+        BUILD["🏗️ builder: Implement code"]:::agent
     end
-    subgraph "LANE: code"
-        TEST["run_shell_command: pytest"]:::code
-        LINT["run_shell_command: ruff check"]:::code
+    
+    subgraph "⚙️ LANE: CODE"
+        LINT{"✅ run_shell: ruff check"}:::code
+        TEST{"✅ run_shell: pytest"}:::code
     end
-    PLAN --> BUILD
-    BUILD --> LINT
-    LINT -.->|Fail| BUILD
-    LINT --> TEST
-    TEST -.->|Fail| BUILD
+    
+    PLAN -->|PlanEnvelope| BUILD
+    BUILD -->|BuildEnvelope| LINT
+    LINT -.->|Fail: stderr| BUILD
+    LINT -->|Pass| TEST
+    TEST -.->|Fail: stderr| BUILD

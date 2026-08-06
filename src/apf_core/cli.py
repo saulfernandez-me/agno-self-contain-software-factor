@@ -45,14 +45,19 @@ def generate_workflow(
         mermaid_connections += f"\n    {agent_list[-1].upper()} --> GATE"
 
     mermaid_content = f"""graph TD
+    %% APF Visual Standard v2.0 Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+    classDef human fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff,rx:5px,ry:5px
+
     %% Workflow: {name}
     
-    subgraph "LANE: agent"
+    subgraph "🤖 LANE: AGENT (Cognition)"
         {mermaid_nodes}
     end
     
-    subgraph "LANE: code"
-        GATE["run_shell_command: echo 'Add validation here'"]:::code
+    subgraph "⚙️ LANE: CODE (Deterministic)"
+        GATE{{"✅ assert: validation gate"}}:::code
     end
     
     {mermaid_connections}

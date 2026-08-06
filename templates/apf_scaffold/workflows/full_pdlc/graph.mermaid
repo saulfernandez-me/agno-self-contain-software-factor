@@ -1,16 +1,22 @@
 graph TD
-    subgraph "LANE: agent"
-        PLAN["planner: Plan"]:::agent
-        BUILD["builder: Code"]:::agent
-        REVIEW["reviewer: Audit"]:::agent
-        DOC["documenter: Docs"]:::agent
+    %% APF Color Palette
+    classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
+    classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
+
+    subgraph "🤖 LANE: AGENT"
+        PLAN["📐 planner: Design Architecture"]:::agent
+        BUILD["🏗️ builder: Write Code"]:::agent
+        REV["🛡️ reviewer: Adversarial Audit"]:::agent
+        DOC["📝 documenter: Write Documentation"]:::agent
     end
-    subgraph "LANE: code"
-        TEST["run_shell_command: pytest"]:::code
+    
+    subgraph "⚙️ LANE: CODE"
+        TEST{"✅ run_shell: pytest"}:::code
     end
-    PLAN --> BUILD
-    BUILD --> TEST
-    TEST -.->|Fail| BUILD
-    TEST --> REVIEW
-    REVIEW -.->|Rejects| BUILD
-    REVIEW --> DOC
+
+    PLAN -->|PlanEnvelope| BUILD
+    BUILD -->|BuildEnvelope| TEST
+    TEST -.->|Fail: stderr| BUILD
+    TEST -->|Pass| REV
+    REV -.->|Fail: review_notes| BUILD
+    REV -->|ReviewEnvelope| DOC
