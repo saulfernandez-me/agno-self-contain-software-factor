@@ -2,8 +2,9 @@ from src.agents.planner import get_planner_agent  # type: ignore[import-not-foun
 from src.agents.reviewer import get_reviewer_agent  # type: ignore[import-not-found]
 
 from apf_core.assert_gates import run_shell_command
-from apf_core.epic_envelopes import BacklogEnvelope, ProductAnalysisEnvelope
 from apf_core.workflow import ApfWorkflow
+
+from .envelopes import BacklogEnvelope, ProductAnalysisEnvelope
 
 
 def run_epic_breakdown(epic_description: str, domain_context: str) -> None:

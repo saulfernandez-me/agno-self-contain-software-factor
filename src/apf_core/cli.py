@@ -27,7 +27,7 @@ def generate_workflow(
     """Autogenerates the .mermaid graph and the _runner.py script for a new workflow."""
     base_dir = get_base_dir()
     workflows_dir = base_dir / "workflows"
-    workflows_dir.mkdir(parents=True, exist_ok=True)
+    (workflows_dir / name).mkdir(parents=True, exist_ok=True)
 
     agent_list = [a.strip() for a in agents.split(",")]
 
@@ -58,7 +58,7 @@ def generate_workflow(
     {mermaid_connections}
 """
 
-    mermaid_path = workflows_dir / f"{name}.mermaid"
+    mermaid_path = workflows_dir / name / "graph.mermaid"
     mermaid_path.write_text(mermaid_content)
 
     # Generate Python Runner
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     run_{name}("Do the task", "You are in an APF repository.")
 """
 
-    runner_path = workflows_dir / f"{name}_runner.py"
+    runner_path = workflows_dir / name / "runner.py"
     runner_path.write_text(runner_content)
 
     console.print(f"[green]✓ Generated Workflow:[/green] {mermaid_path}")

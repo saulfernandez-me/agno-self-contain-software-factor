@@ -93,7 +93,7 @@ def process_issue(issue_number: int) -> None:
     )
 
     # We call the python runner. We assume the workflows folder exists in the target repo.
-    runner_script = Path("workflows/12_full_pdlc_runner.py")
+    runner_script = Path("workflows/full_pdlc/runner.py")
     if not runner_script.exists():
         console.print(
             f"[red]❌ Workflow script not found at {runner_script}. Are you in an APF-stamped repository?[/red]"
@@ -126,7 +126,7 @@ def process_issue(issue_number: int) -> None:
             # Run the workflow
             task_instruction = f"Issue Title: {title}\nIssue Body:\n{body}"
 
-            # Assuming the runner has a function named run_12_full_pdlc or run_workflow
+            # Assuming the runner has a function named run_full_pdlc or run_workflow
             # We standardize calling convention. Let's look for a function that starts with 'run_'
             run_func = None
             for attr_name in dir(runner_module):
