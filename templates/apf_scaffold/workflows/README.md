@@ -31,40 +31,40 @@ Each workflow represents a distinct "assembly line" designed for a specific Prod
 
 *(For technical details on how to invoke these workflows from the APF Daemon, see the global architectural guidelines).*
 
-### 01_generic_prompt
+### generic_prompt
 A raw execution pipeline. The `Builder` is invoked directly with a user prompt. No verification is performed. Ideal for quick boilerplate generation.
 
-### 02_recon_only
+### recon_only
 A pure read-only pipeline. The `Scout` agent maps the repository or searches the web to build context. Impossible to modify files due to tool restrictions.
 
-### 03_plan_only
+### plan_only
 The architectural pipeline. The `Planner` agent reads the task and outputs a `PlanEnvelope` without writing any implementation code.
 
-### 04_build_only
+### build_only
 The execution pipeline. The `Builder` assumes a plan already exists in the context and focuses entirely on mutating source files.
 
-### 05_quality_gates
+### quality_gates
 The fastest pipeline. Skips the `agent` lane entirely and executes `ruff check` and `pytest` in the `code` lane to verify repository health at zero token cost.
 
-### 06_plan_build
+### plan_build
 A chained cognitive pipeline. The `Planner` designs the solution, and its output envelope is piped directly into the `Builder`. Lacks automated verification.
 
-### 07_build_test
+### build_test
 The fundamental iterative loop. The `Builder` writes code, and the pipeline immediately jumps to the `code` lane to run tests. If tests fail, the `stderr` is fed back to the `Builder` in an **In-Session Correction Loop**.
 
-### 08_build_review
+### build_review
 The cognitive auditing loop. Instead of relying on bash tests, the `Reviewer` agent acts as the gate, analyzing the diff for logic flaws. If the Reviewer rejects the code, the Builder is re-prompted.
 
-### 09_plan_build_test
+### plan_build_test
 The standard agile pipeline. Combines the architectural safety of the `Planner` with the deterministic verification of the `build_test` correction loop.
 
-### 10_plan_build_test_quality
+### plan_build_test_quality
 The strict enterprise pipeline. Identical to `09`, but the `Builder` must pass a static linter (`ruff`) gate before the test suite (`pytest`) gate is even executed, saving test runner execution time on syntax errors.
 
-### 11_document_changes
+### document_changes
 The release pipeline. Uses the `code` lane to execute `git diff main`, pipes the physical diff to the `Documenter` agent, and outputs a formatted changelog or PR description.
 
-### 12_full_pdlc
+### full_pdlc
 **The comprehensive Product Development Lifecycle.** This is the default workflow used by the GitOps Daemon. 
 *Flow: Planner (Designs) -> Builder (Writes) -> Code Gate (Tests & Loop) -> Reviewer (Audits & Loop) -> Documenter (PR Description).*
 

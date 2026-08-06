@@ -13,7 +13,7 @@ Every workflow in APF must be visually defined using Mermaid.js before it is exe
    - Code deterministic nodes must be tagged with `:::code`.
 3. **Data Flow:** Connections between an `agent` and a `code` node implicitly carry the Pydantic JSON `Envelope` across the boundary.
 
-### Example: `workflows/feature_implementation.mermaid`
+### Example: `workflows/feature_implementation/graph.mermaid`
 ```mermaid
 graph TD
     subgraph "LANE: agent"
@@ -31,7 +31,7 @@ graph TD
     BUILD --> GATE_TEST
 ```
 
-## 2. The Python Runner (`_runner.py`)
+## 2. The Python Runner (`runner.py`)
 
 Once the blueprint exists, create the Python orchestration script using the `ApfWorkflow` class from `apf_core.workflow`.
 
@@ -40,7 +40,7 @@ Once the blueprint exists, create the Python orchestration script using the `Apf
 2. You must use the `with workflow.lane("lane_type"):` context manager to wrap the execution of Agno Agents or subprocess calls.
 3. Handle assertion gate failures by feeding the `stderr` back into the agent's context for the Correction Loop.
 
-### Example: `workflows/feature_implementation_runner.py`
+### Example: `workflows/feature_implementation/runner.py`
 ```python
 from apf_core.workflow import ApfWorkflow
 from apf_core.assert_gates import run_shell_command
