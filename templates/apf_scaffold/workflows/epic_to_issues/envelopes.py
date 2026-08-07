@@ -43,6 +43,23 @@ class FunctionalRequirementsEnvelope(EnvelopeBase):
     )
 
 
+class ArchitecturalDesignEnvelope(EnvelopeBase):
+    """
+    Output contract for the Software Architect.
+    """
+    rfc_content: str = Field(
+        ...,
+        description="The full Markdown content of the Request for Comments (Tech Spec) document outlining the entire architecture and logic.",
+    )
+    rfc_path: str = Field(
+        ...,
+        description="The relative path where the RFC should be saved (e.g., 'docs/rfcs/001-feature-name.md').",
+    )
+    implementation_breakdown: list[str] = Field(
+        ...,
+        description="A list of distinct, atomic technical modules that need to be built to complete this RFC.",
+    )
+
 class GithubIssueSchema(BaseModel):
     """Schema for a single atomized GitHub issue."""
 
@@ -95,14 +112,6 @@ class BacklogEnvelope(EnvelopeBase):
     epic_title: str = Field(
         ...,
         description="A concise, 3-5 word title summarizing the overall business Epic.",
-    )
-    rfc_content: str = Field(
-        ...,
-        description="The full Markdown content of the Request for Comments (Tech Spec) document outlining the entire architecture and logic.",
-    )
-    rfc_path: str = Field(
-        ...,
-        description="The relative path where the RFC should be saved (e.g., 'docs/rfcs/001-feature-name.md').",
     )
     issues: list[GithubIssueSchema] = Field(
         ..., description="The list of atomic GitHub Issues generated from the Epic."

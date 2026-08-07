@@ -1,3 +1,4 @@
+from src.agents.architect import get_architect_agent  # type: ignore[import-not-found]
 from src.agents.functional_analyst import (  # type: ignore[import-not-found]
     get_functional_analyst_agent,  # type: ignore[import-not-found]
 )
@@ -10,6 +11,7 @@ from apf_core.assert_gates import run_shell_command
 from apf_core.workflow import ApfWorkflow
 
 from .envelopes import (
+    ArchitecturalDesignEnvelope,
     BacklogEnvelope,
     FunctionalRequirementsEnvelope,
     ProductAnalysisEnvelope,
@@ -18,7 +20,7 @@ from .envelopes import (
 
 def run(epic_description: str, domain_context: str) -> None:
     """
-    Executes the Product Management workflow: Epic Ideation -> Product Analysis -> Functional Specs -> Atomic Issue Generation.
+    Executes the Product Management workflow: Epic Ideation -> Product Analysis -> Functional Specs -> Architectural Design -> Atomic Issue Generation.
     """
     workflow = ApfWorkflow(name="epic_to_issues")
 
@@ -34,9 +36,15 @@ def run(epic_description: str, domain_context: str) -> None:
         FunctionalRequirementsEnvelope,
     )
 
+    architect = get_architect_agent(
+        domain_context,
+        "Act as the Software Architect. Take the Functional Analyst's behavioral requirements and design the physical system architecture, data models, and API contracts.",
+        ArchitecturalDesignEnvelope,
+    )
+
     scrum_master = get_planner_agent(
         domain_context,
-        "Act as a Technical Scrum Master / Architect. Take the Functional Analyst's behavioral requirements and break them down into atomic, highly technical GitHub issues.",
+        "Act as a Technical Scrum Master. Take the Architect's design and route it into atomic GitHub issues. Do not invent technical steps.",
         BacklogEnvelope,
     )
 
@@ -64,10 +72,10 @@ def run(epic_description: str, domain_context: str) -> None:
         """
         fa_envelope = workflow.run_agent(functional_analyst, fa_task)
 
-    # 3. BREAKDOWN PHASE
+    # 3. ARCHITECTURAL DESIGN PHASE
     with workflow.lane("agent"):
-        print("Running Scrum Master Breakdown...")
-        sm_task = f"""
+        print("Running Architectural Design...")
+        arch_task = f"""
         [ORIGINAL EPIC]
         {epic_description}
         
@@ -76,25 +84,41 @@ def run(epic_description: str, domain_context: str) -> None:
         Error States: {", ".join(fa_envelope.error_states)}
         Acceptance Criteria: {", ".join(fa_envelope.acceptance_criteria)}
         
-        Generate the formal RFC document and the atomic issues.
+        Design the technical architecture and generate the formal RFC document.
         """
-        backlog_envelope: BacklogEnvelope = workflow.run_agent(
-            scrum_master, sm_task, skills=["epic_breakdown", "spec_driven"]
+        arch_envelope: ArchitecturalDesignEnvelope = workflow.run_agent(
+            architect, arch_task, skills=["spec_driven"]
         )
 
-    # 4. EXECUTION PHASE (GitHub API Injection)
+    # 4. BREAKDOWN PHASE (Scrum Master)
+    with workflow.lane("agent"):
+        print("Running Scrum Master Breakdown...")
+        sm_task = f"""
+        [ARCHITECTURAL DESIGN & MODULES TO BUILD]
+        {", ".join(arch_envelope.implementation_breakdown)}
+        
+        [RFC POINTER]
+        {arch_envelope.rfc_path}
+        
+        Route these architectural modules into atomic GitHub Issues.
+        """
+        backlog_envelope: BacklogEnvelope = workflow.run_agent(
+            scrum_master, sm_task, skills=["epic_breakdown"]
+        )
+
+    # 5. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
         # Write RFC to disk
-        print(f"Writing RFC to {backlog_envelope.rfc_path}...")
+        print(f"Writing RFC to {arch_envelope.rfc_path}...")
         import os
         from pathlib import Path
 
-        rfc_path = Path(backlog_envelope.rfc_path)
+        rfc_path = Path(arch_envelope.rfc_path)
         rfc_path.parent.mkdir(parents=True, exist_ok=True)
-        rfc_path.write_text(backlog_envelope.rfc_content, encoding="utf-8")
+        rfc_path.write_text(arch_envelope.rfc_content, encoding="utf-8")
 
         # Git commit the RFC before creating issues
-        run_shell_command(f"git add {backlog_envelope.rfc_path}")
+        run_shell_command(f"git add {arch_envelope.rfc_path}")
         run_shell_command(
             f'git commit -m "docs: add RFC for {backlog_envelope.epic_title}"'
         )
