@@ -100,6 +100,48 @@ class ApfWorkflow(Workflow):
         # Extract the expected schema from the agent's initialization
         expected_schema = getattr(agent, "output_schema", None)
 
+        # 🚀 MOCK MODE (For Instant CI/CD Testing)
+        import os
+
+        if os.getenv("APF_MOCK_MODELS") == "true":
+            print(
+                f"[APF-MOCK] Bypassing LLM. Generating instant mock data for {agent.name}..."
+            )
+            import time
+
+            time.sleep(0.1)  # Simulate minimal processing
+
+            if expected_schema:
+                # Use a very naive generic filler to satisfy Pydantic models temporarily
+                mock_data: dict[str, Any] = {}
+                for field_name, field_info in expected_schema.model_fields.items():
+                    if field_name == "status":
+                        mock_data[field_name] = "success"
+                    elif "list" in str(field_info.annotation).lower():
+                        mock_data[field_name] = []
+                    elif "int" in str(field_info.annotation).lower():
+                        mock_data[field_name] = 1
+                    else:
+                        mock_data[field_name] = "Mocked content"
+
+                # Specialized mock for GithubIssueSchema arrays
+                if expected_schema.__name__ == "BacklogEnvelope":
+                    # We inject a fake issue dict so Pydantic parses it
+                    mock_data["issues"] = [
+                        {
+                            "title": "Mock Issue",
+                            "issue_type": "task",
+                            "rfc_pointer": "docs/rfcs/mock.md",
+                            "execution_task": ["Mock step"],
+                            "definition_of_done": ["Done"],
+                            "size_label": "size: S",
+                            "scope_label": "scope: backend",
+                        }
+                    ]
+
+                return expected_schema.model_validate(mock_data)
+            return "Mocked cognitive output."
+
         # Temporarily strip the structured output constraint from the cognitive agent
         agent.output_schema = None
 
