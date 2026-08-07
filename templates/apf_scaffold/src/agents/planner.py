@@ -29,9 +29,9 @@ def get_planner_agent(
     # to understand imports, folder structures, and existing patterns before making a plan.
     # It must NEVER write code.
     read_only_tools = WorkspaceTools(restrict_to_cwd=True)
-    # Safely remove the write_file method from this specific instance
-    if hasattr(read_only_tools, "write_file"):
-        delattr(read_only_tools, "write_file")
+    # Safely remove the write_file method from this specific instance's toolkit
+    if "write_file" in read_only_tools.functions:
+        del read_only_tools.functions["write_file"]
 
     return Agent(
         name="Planner",

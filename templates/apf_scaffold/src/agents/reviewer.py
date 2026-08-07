@@ -26,8 +26,8 @@ def get_reviewer_agent(
     )
 
     read_only_tools = WorkspaceTools(restrict_to_cwd=True)
-    if hasattr(read_only_tools, "write_file"):
-        delattr(read_only_tools, "write_file")
+    if "write_file" in read_only_tools.functions:
+        del read_only_tools.functions["write_file"]
 
     return Agent(
         name="Reviewer",
