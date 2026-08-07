@@ -22,6 +22,25 @@ class ProductAnalysisEnvelope(EnvelopeBase):
     )
 
 
+class FunctionalRequirementsEnvelope(EnvelopeBase):
+    """
+    Output contract for the Functional Analyst.
+    """
+
+    user_flows: list[str] = Field(
+        ...,
+        description="Detailed step-by-step behaviors expected from the system.",
+    )
+    error_states: list[str] = Field(
+        ...,
+        description="How the system should handle edge cases specified by the PO.",
+    )
+    acceptance_criteria: list[str] = Field(
+        ...,
+        description="Strict, testable criteria the architecture must satisfy.",
+    )
+
+
 class GithubIssueSchema(BaseModel):
     """Schema for a single atomized GitHub issue."""
 
