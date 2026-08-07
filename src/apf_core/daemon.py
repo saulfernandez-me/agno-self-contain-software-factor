@@ -17,80 +17,109 @@ def run_cmd(cmd: list[str], cwd: str = ".") -> tuple[bool, str, str]:
         return False, "", str(e)
 
 
-def process_issue(issue_number: int) -> None:
-    """End-to-end processing of a GitHub Issue autonomously."""
+def process_target(target_id: int, is_milestone: bool = False) -> None:
+    """End-to-end processing of a GitHub Issue or Milestone autonomously."""
+    target_type = "Milestone" if is_milestone else "Issue"
     console.print(
-        f"[bold magenta]🚀 Starting APF Daemon for Issue #{issue_number}...[/bold magenta]"
+        f"[bold magenta]🚀 Starting APF Daemon for {target_type} #{target_id}...[/bold magenta]"
     )
 
-    # 1. Fetch Issue Data
-    console.print("[cyan]📥 Fetching issue data from GitHub...[/cyan]")
-    ok, stdout, stderr = run_cmd(
-        ["gh", "issue", "view", str(issue_number), "--json", "title,body,labels"]
-    )
-    if not ok:
-        console.print(f"[red]❌ Failed to fetch issue #{issue_number}: {stderr}[/red]")
-        sys.exit(1)
-
+    # 1. Fetch Target Data
+    console.print(f"[cyan]📥 Fetching {target_type.lower()} data from GitHub...[/cyan]")
     import json
 
-    issue_data = json.loads(stdout)
-    title = issue_data.get("title", "")
-    body = issue_data.get("body", "")
+    if is_milestone:
+        _, repo_name, _ = run_cmd(
+            ["gh", "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"]
+        )
+        if not repo_name:
+            console.print("[red]❌ Failed to fetch repository name.[/red]")
+            sys.exit(1)
 
-    # Check if it's already in the backlog or if we just want to force run it
-    labels = [l.get("name") for l in issue_data.get("labels", [])]
-    if "apf:backlog" in labels:
+        ok, stdout, stderr = run_cmd(
+            ["gh", "api", f"repos/{repo_name}/milestones/{target_id}"]
+        )
+        if not ok:
+            console.print(
+                f"[red]❌ Failed to fetch milestone #{target_id}: {stderr}[/red]"
+            )
+            sys.exit(1)
+
+        target_data = json.loads(stdout)
+        title = target_data.get("title", "")
+        # The title contains "[Epic] Epic Name", we'll strip "[Epic] " if present
+        title = title.removeprefix("[Epic] ")
+        body = target_data.get("description", "")
+        labels = []  # Milestones don't use issues' labels
+    else:
+        ok, stdout, stderr = run_cmd(
+            ["gh", "issue", "view", str(target_id), "--json", "title,body,labels"]
+        )
+        if not ok:
+            console.print(f"[red]❌ Failed to fetch issue #{target_id}: {stderr}[/red]")
+            sys.exit(1)
+
+        target_data = json.loads(stdout)
+        title = target_data.get("title", "")
+        body = target_data.get("body", "")
+        labels = [l.get("name") for l in target_data.get("labels", [])]
+
+    # Handle Issue-specific logic (Labels & Branching)
+    if not is_milestone:
+        if "apf:backlog" in labels:
+            run_cmd(
+                [
+                    "gh",
+                    "issue",
+                    "edit",
+                    str(target_id),
+                    "--remove-label",
+                    "apf:backlog",
+                    "--add-label",
+                    "apf:planning",
+                ]
+            )
+        else:
+            console.print(
+                "[yellow]⚠ Issue is not in apf:backlog. Proceeding anyway...[/yellow]"
+            )
+            run_cmd(
+                ["gh", "issue", "edit", str(target_id), "--add-label", "apf:planning"]
+            )
+
+        # 2. Git Automation (Create Branch)
+        import re
+
+        clean_title = re.sub(r"[^a-zA-Z0-9]", "-", title.lower())
+        clean_title = re.sub(r"-+", "-", clean_title).strip("-")
+        branch_name = f"feat/issue-{target_id}-{clean_title}"
+
+        console.print(
+            f"[cyan]🌿 Creating and checking out branch: {branch_name}[/cyan]"
+        )
+        ok, _, stderr = run_cmd(["git", "checkout", "-b", branch_name])
+        if not ok:
+            run_cmd(["git", "checkout", branch_name])
+    else:
+        branch_name = "main"  # Milestones don't branch
+
+    # 3. Execution
+    console.print(f"[cyan]⚙️ Executing workflow for {target_type}...[/cyan]")
+
+    if not is_milestone:
+        # Change label to implementing
         run_cmd(
             [
                 "gh",
                 "issue",
                 "edit",
-                str(issue_number),
+                str(target_id),
                 "--remove-label",
-                "apf:backlog",
-                "--add-label",
                 "apf:planning",
+                "--add-label",
+                "apf:implementing",
             ]
         )
-    else:
-        console.print(
-            "[yellow]⚠ Issue is not in apf:backlog. Proceeding anyway...[/yellow]"
-        )
-        run_cmd(
-            ["gh", "issue", "edit", str(issue_number), "--add-label", "apf:planning"]
-        )
-
-    # 2. Git Automation (Create Branch)
-    # Sanitize title for branch name
-    import re
-
-    clean_title = re.sub(r"[^a-zA-Z0-9]", "-", title.lower())
-    clean_title = re.sub(r"-+", "-", clean_title).strip("-")
-    branch_name = f"feat/issue-{issue_number}-{clean_title}"
-
-    console.print(f"[cyan]🌿 Creating and checking out branch: {branch_name}[/cyan]")
-    ok, _, stderr = run_cmd(["git", "checkout", "-b", branch_name])
-    if not ok:
-        # Might already exist
-        run_cmd(["git", "checkout", branch_name])
-
-    # 3. Execution (Running the standard PDLC workflow)
-    console.print("[cyan]⚙️ Executing standard PDLC workflow...[/cyan]")
-
-    # Change label to implementing
-    run_cmd(
-        [
-            "gh",
-            "issue",
-            "edit",
-            str(issue_number),
-            "--remove-label",
-            "apf:planning",
-            "--add-label",
-            "apf:implementing",
-        ]
-    )
 
     # We call the python runner. We assume the workflows folder exists in the target repo.
     runner_script = Path("workflows/full_pdlc/runner.py")
@@ -152,7 +181,7 @@ def process_issue(issue_number: int) -> None:
     except (OSError, ValueError, TypeError, KeyError) as e:
         console.print(f"[red]❌ Workflow execution failed: {e}[/red]")
         run_cmd(
-            ["gh", "issue", "edit", str(issue_number), "--add-label", "apf:blocked"]
+            ["gh", "issue", "edit", str(target_id), "--add-label", "apf:blocked"]
         )
         sys.exit(1)
 
@@ -163,7 +192,7 @@ def process_issue(issue_number: int) -> None:
             "gh",
             "issue",
             "edit",
-            str(issue_number),
+            str(target_id),
             "--remove-label",
             "apf:implementing",
             "--add-label",
@@ -182,12 +211,26 @@ def process_issue(issue_number: int) -> None:
             "git",
             "commit",
             "-m",
-            f"feat: implement issue #{issue_number} autonomous resolution",
+            f"feat: implement issue #{target_id} autonomous resolution",
         ]
     )
 
     console.print("[cyan]☁️ Pushing to remote...[/cyan]")
     run_cmd(["git", "push", "-u", "origin", branch_name])
+
+    _, repo_view_out, _ = run_cmd(
+        [
+            "gh",
+            "repo",
+            "view",
+            "--json",
+            "defaultBranchRef",
+            "--jq",
+            ".defaultBranchRef.name",
+        ]
+    )
+    if repo_view_out:
+        repo_view_out.strip()
 
     console.print("[cyan]🔗 Creating Pull Request...[/cyan]")
     ok, pr_url, stderr = run_cmd(
@@ -196,9 +239,9 @@ def process_issue(issue_number: int) -> None:
             "pr",
             "create",
             "--title",
-            f"feat: Resolve Issue #{issue_number} ({title})",
+            f"feat: Resolve Issue #{target_id} ({title})",
             "--body",
-            f"Autonomous resolution of #{issue_number} by APF agents.\n\nCloses #{issue_number}",
+            f"Autonomous resolution of #{target_id} by APF agents.\n\nCloses #{target_id}",
             "--base",
             "main",
         ]
@@ -217,11 +260,11 @@ def main() -> None:
         description="APF GitOps Daemon - Autonomous Issue Processor"
     )
     parser.add_argument(
-        "issue_number", type=int, help="The GitHub Issue number to process."
+        "target_id", type=int, help="The GitHub Issue number to process."
     )
     args = parser.parse_args()
 
-    process_issue(args.issue_number)
+    process_target(args.target_id)
 
 
 if __name__ == "__main__":
