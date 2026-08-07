@@ -54,9 +54,25 @@ class GithubIssueSchema(BaseModel):
         ...,
         description="The categorization of the issue. 'feature' for new value, 'bug' for fixes, 'task' for technical chores.",
     )
-    description: str = Field(
+    context_and_rationale: str = Field(
         ...,
-        description="The Markdown body of the issue, strictly following the APF Feature Template.",
+        description="Deep business context. Why are we doing this? Why is this specific architectural approach the right one for this repository?",
+    )
+    technical_scope: list[str] = Field(
+        ...,
+        description="Explicit list of files, classes, or endpoints that must be modified or created.",
+    )
+    implementation_steps: list[str] = Field(
+        ...,
+        description="A highly detailed, step-by-step technical plan for the Builder agent to follow.",
+    )
+    definition_of_done: list[str] = Field(
+        ...,
+        description="Clear acceptance criteria checklists.",
+    )
+    verification_command: str = Field(
+        default="uv run pytest",
+        description="The exact bash command to verify this issue locally (e.g., 'uv run pytest tests/test_auth.py').",
     )
     lifecycle_label: str = Field(
         default="apf:backlog", description="The lifecycle state, must be 'apf:backlog'"

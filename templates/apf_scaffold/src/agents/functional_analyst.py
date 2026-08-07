@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Type
 
 from agno.agent import Agent
 from pydantic import BaseModel
@@ -10,7 +9,7 @@ from apf_core.config import get_models_for_tier
 def get_functional_analyst_agent(
     domain_context: str,
     task_instructions: str,
-    output_schema: Type[BaseModel],
+    output_schema: type[BaseModel],
     model_tier: str = "heavy",
 ) -> Agent:
     """
