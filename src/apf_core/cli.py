@@ -131,6 +131,16 @@ def process(
     process_target(issue_number)
 
 
+@app.command("process-epic")
+def process_epic(
+    milestone_id: int = typer.Argument(..., help="The GitHub Milestone ID to process as an Epic."),
+) -> None:
+    """End-to-end processing of a GitHub Milestone (Epic) autonomously."""
+    from apf_core.daemon import process_target
+
+    process_target(milestone_id, is_milestone=True)
+
+
 @generate_app.command("agent")
 def generate_agent(
     name: str = typer.Argument(..., help="Name of the agent (e.g., translator)"),
