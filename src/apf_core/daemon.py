@@ -180,13 +180,19 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
 
     except (OSError, ValueError, TypeError, KeyError) as e:
         console.print(f"[red]❌ Workflow execution failed: {e}[/red]")
-        run_cmd(
-            ["gh", "issue", "edit", str(target_id), "--add-label", "apf:blocked"]
-        )
+        if not is_milestone:
+            run_cmd(
+                ["gh", "issue", "edit", str(target_id), "--add-label", "apf:blocked"]
+            )
         sys.exit(1)
 
     # 4. Delivery (Commit, Push, PR)
     console.print("[cyan]📦 Workflow completed. Preparing delivery...[/cyan]")
+    
+    if is_milestone:
+        console.print("[green]🎉 Milestone processed successfully. Backlog populated.[/green]")
+        return
+
     run_cmd(
         [
             "gh",
