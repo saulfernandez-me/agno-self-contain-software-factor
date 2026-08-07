@@ -121,6 +121,8 @@ class ApfWorkflow(Workflow):
                         mock_data[field_name] = []
                     elif "int" in str(field_info.annotation).lower():
                         mock_data[field_name] = 1
+                    elif "dict" in str(field_info.annotation).lower():
+                        mock_data[field_name] = {}
                     else:
                         mock_data[field_name] = "Mocked content"
 
