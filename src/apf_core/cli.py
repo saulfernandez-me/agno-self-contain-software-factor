@@ -126,9 +126,9 @@ def process(
     issue_number: int = typer.Argument(..., help="The GitHub Issue number to process."),
 ) -> None:
     """End-to-end processing of a GitHub Issue autonomously."""
-    from apf_core.daemon import process_issue
+    from apf_core.daemon import process_target
 
-    process_issue(issue_number)
+    process_target(issue_number)
 
 
 @generate_app.command("agent")
