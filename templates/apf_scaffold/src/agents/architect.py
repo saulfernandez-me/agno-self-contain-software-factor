@@ -1,42 +1,40 @@
 from pathlib import Path
+from typing import Type
 
 from agno.agent import Agent
 from pydantic import BaseModel
 
 from apf_core.config import get_models_for_tier
-from apf_core.tools.workspace_tools import (
-    WorkspaceTools,  # type: ignore[import-not-found]
-)
+from apf_core.tools.workspace_tools import WorkspaceTools  # type: ignore[import-not-found]
 
 
-def get_planner_agent(
+def get_architect_agent(
     domain_context: str,
     task_instructions: str,
-    output_schema: type[BaseModel],
+    output_schema: Type[BaseModel],
     model_tier: str = "heavy",
 ) -> Agent:
     """
-    Factory for the Planner Agent (The Scrum Master).
+    Factory for the Architect Agent (The System Designer).
     """
-    behavior_file = Path(".context/agents/planner_behavior.md")
+    behavior_file = Path(".context/agents/architect_behavior.md")
     behavioral_harness = (
         behavior_file.read_text(encoding="utf-8")
         if behavior_file.exists()
-        else "You are a Scrum Master. You organize architectural plans into trackable issues."
+        else "You are a Software Architect. You design systems and write Technical Specifications (RFCs)."
     )
 
-    # We provide the Planner with read-only tools. It must be able to explore the codebase
-    # to understand imports, folder structures, and existing patterns before making a plan.
-    # It must NEVER write code.
-    # Safely remove the write_file method from this specific instance's toolkit
+    read_only_tools = WorkspaceTools(restrict_to_cwd=True)
+    if "write_file" in read_only_tools.functions:
+        del read_only_tools.functions["write_file"]
 
     return Agent(
-        name="Planner",
+        name="Architect",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description=behavioral_harness,
         instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
-        tools=[],
+        tools=[read_only_tools],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
         tool_call_limit=5,
