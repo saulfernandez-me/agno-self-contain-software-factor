@@ -139,13 +139,13 @@ class ApfWorkflow(Workflow):
                 formatter = Agent(
                     name="Formatter",
                     model=formatter_model,
-                    description="You are a strict data formatter. Your only job is to extract the required fields into the JSON schema.",
+                    description="You are a strict data formatter. Your only job is to extract the required fields into the JSON schema. NEVER wrap your response in markdown code blocks like ```json. Output ONLY raw, parseable JSON.",
                     instructions=f"Analyze the following execution log. Extract the precise status, summary, and artifacts touched. If the execution failed or encountered errors, set status to 'fail'.\n\n[EXECUTION LOG]\n{cognitive_content}",
                     output_schema=expected_schema,
                 )
 
                 formatter_response = formatter.run(
-                    "Format the execution output into the required JSON envelope."
+                    "Format the execution output into the required JSON envelope. Output ONLY valid JSON."
                 )
 
                 # Extract Structured Output
@@ -159,6 +159,23 @@ class ApfWorkflow(Workflow):
                     formatter_response.content, BaseModel
                 ):
                     output = formatter_response.content
+                elif hasattr(formatter_response, "content") and isinstance(
+                    formatter_response.content, str
+                ):
+                    # Fallback for models that ignore instructions and wrap in markdown
+                    content = formatter_response.content.strip()
+                    content = content.removeprefix("```json")
+                    content = content.removeprefix("```")
+                    content = content.removesuffix("```")
+                    content = content.strip()
+                    try:
+                        import json
+
+                        parsed_json = json.loads(content)
+                        if expected_schema:
+                            output = expected_schema.model_validate(parsed_json)
+                    except Exception as parse_e:  # noqa: BLE001
+                        print(f"[APF] Manual JSON parsing failed: {parse_e}")
 
                 if output is not None:
                     agent.output_schema = expected_schema  # Restore
