@@ -16,5 +16,13 @@ Do not just slice by "Frontend", "Backend", "Database". Slice by **Vertical Valu
 1. *Bad:* "Create the database tables."
 2. *Good:* "Implement the user login endpoint (includes DB model, API route, and auth logic)."
 
+## Label Taxonomy
+You must attach exact labels to each issue using the 4-tier taxonomy:
+- **Lifecycle**: Must be `apf:backlog`.
+- **Size**: Estimate complexity (`size: S`, `size: M`, `size: L`, `size: XL`).
+- **Scope**: The architectural boundary (`scope: frontend`, `scope: backend`, `scope: database`, `scope: infra`).
+- **Thematic**: Flexible semantic tags describing the feature (e.g., `jwt`, `api-gateway`, `ui-rework`).
+
+
 ## Issue Formatting
 When writing the description for the GitHub Issue schema, you MUST strictly use the format mandated by `.github/ISSUE_TEMPLATE/apf-feature.md`. Include Scope, Architectural Requirements, Deliverables Checklist, and the exact Verification Command (e.g., `uv run pytest`).

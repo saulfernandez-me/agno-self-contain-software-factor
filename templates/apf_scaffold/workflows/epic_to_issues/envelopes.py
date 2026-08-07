@@ -52,7 +52,21 @@ class GithubIssueSchema(BaseModel):
         ...,
         description="The Markdown body of the issue, strictly following the APF Feature Template.",
     )
-    labels: list[str] = Field(default=["apf:backlog"], description="Labels to attach.")
+    lifecycle_label: str = Field(
+        default="apf:backlog", description="The lifecycle state, must be 'apf:backlog'"
+    )
+    size_label: str = Field(
+        ...,
+        description="The estimated effort/complexity (e.g., 'size: S', 'size: M', 'size: L', 'size: XL')",
+    )
+    scope_label: str = Field(
+        ...,
+        description="The architectural boundary (e.g., 'scope: frontend', 'scope: backend', 'scope: infra')",
+    )
+    thematic_labels: list[str] = Field(
+        default_factory=list,
+        description="Flexible semantic tags (e.g., 'jwt', 'database', 'ui-rework').",
+    )
 
 
 class BacklogEnvelope(EnvelopeBase):

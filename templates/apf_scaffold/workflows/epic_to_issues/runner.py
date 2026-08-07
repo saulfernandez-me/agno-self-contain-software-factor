@@ -95,7 +95,17 @@ def run(epic_description: str, domain_context: str) -> None:
                 f.write(issue.description)
                 temp_path = f.name
 
-            labels_flag = ",".join(issue.labels)
+            # Create labels gracefully if they don't exist
+            all_labels = [
+                issue.lifecycle_label,
+                issue.size_label,
+                issue.scope_label,
+            ] + issue.thematic_labels
+            for label in all_labels:
+                # We ignore the error if it already exists
+                run_shell_command(f'gh label create "{label}"')
+
+            labels_flag = ",".join(all_labels)
 
             # Fire the command
             ok, _stdout, stderr = run_shell_command(
