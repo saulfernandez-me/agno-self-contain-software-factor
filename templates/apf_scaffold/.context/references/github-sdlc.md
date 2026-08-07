@@ -9,6 +9,13 @@ APF uses GitHub Issue labels to track the execution state of a workflow. The Pyt
 | Label | Executing Node | Description |
 | :--- | :--- | :--- |
 | `apf:backlog` | Human | Issue created and ready for the factory to pick up. |
+
+## 2. Advanced Label Taxonomy
+In addition to lifecycle states, APF mandates a structured taxonomy for backlog organization:
+- **Size Labels**: `size: S`, `size: M`, `size: L`, `size: XL`.
+- **Scope Labels**: Architectural boundaries (e.g., `scope: frontend`, `scope: backend`).
+- **Thematic Labels**: Flexible tags for domain filtering (e.g., `jwt-auth`, `db-migration`).
+
 | `apf:planning` | `Agent (Planner)` | Creating architectural design. |
 | `apf:implementing`| `Agent (Builder)` | Writing source code and tests. |
 | `apf:testing` | `Code (Gates)` | Running linters and unit test suites locally. |
