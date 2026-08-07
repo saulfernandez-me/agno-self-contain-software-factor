@@ -1,16 +1,18 @@
 graph TD
-    %% APF Color Palette
+    %% APF Visual Standard v2.0 Color Palette
     classDef agent fill:#0f5132,stroke:#0dfd8a,stroke-width:2px,color:#fff,rx:5px,ry:5px
     classDef code fill:#2d1b22,stroke:#ff4d4f,stroke-width:2px,color:#fff,stroke-dasharray:5 5,rx:3px,ry:3px
 
-    subgraph "🤖 LANE: AGENT"
-        PO["👑 product_owner: Product Analysis PO["🛡️ reviewer: Product Analysis & MVP Scope"]:::agent MVP Scope"]:::agent
+    subgraph "🤖 LANE: AGENT (Cognition)"
+        PO["👑 product_owner: Product Analysis & MVP Scope"]:::agent
+        FA["📋 functional_analyst: System Behavior Translation"]:::agent
         SM["📐 planner: Atomic Issue Breakdown"]:::agent
     end
 
-    subgraph "⚙️ LANE: CODE"
-        API["✅ run_shell: gh issue create"]:::code
+    subgraph "⚙️ LANE: CODE (Deterministic)"
+        API{"✅ run_shell: gh issue create"}:::code
     end
 
-    PO -->|ProductAnalysisEnvelope| SM
+    PO -->|ProductAnalysisEnvelope| FA
+    FA -->|FunctionalRequirementsEnvelope| SM
     SM -->|BacklogEnvelope| API

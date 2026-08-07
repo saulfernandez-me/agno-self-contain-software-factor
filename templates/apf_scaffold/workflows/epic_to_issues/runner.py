@@ -1,58 +1,86 @@
+from src.agents.functional_analyst import (  # type: ignore[import-not-found]
+    get_functional_analyst_agent,  # type: ignore[import-not-found]
+)
 from src.agents.planner import get_planner_agent  # type: ignore[import-not-found]
-from src.agents.product_owner import (
+from src.agents.product_owner import (  # type: ignore[import-not-found]
     get_product_owner_agent,  # type: ignore[import-not-found]
 )
 
 from apf_core.assert_gates import run_shell_command
 from apf_core.workflow import ApfWorkflow
 
-from .envelopes import BacklogEnvelope, ProductAnalysisEnvelope
+from .envelopes import (
+    BacklogEnvelope,
+    FunctionalRequirementsEnvelope,
+    ProductAnalysisEnvelope,
+)
 
 
-def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
+def run(epic_description: str, domain_context: str) -> None:
     """
-    Executes the Product Management workflow: Epic Ideation -> Product Analysis -> Atomic Issue Generation.
+    Executes the Product Management workflow: Epic Ideation -> Product Analysis -> Functional Specs -> Atomic Issue Generation.
     """
-    workflow = ApfWorkflow(name="epic_breakdown")
+    workflow = ApfWorkflow(name="epic_to_issues")
 
-    # 1. Instantiate agents with specific PM roles injected
     product_owner = get_product_owner_agent(
         domain_context,
         "Act as the Product Owner. Analyze this Epic for edge cases, validity, and define an MVP scope.",
         ProductAnalysisEnvelope,
     )
 
+    functional_analyst = get_functional_analyst_agent(
+        domain_context,
+        "Act as the Functional Analyst. Translate the PO's MVP into precise system behaviors (BDD) without dictating technical architecture.",
+        FunctionalRequirementsEnvelope,
+    )
+
     scrum_master = get_planner_agent(
         domain_context,
-        "Act as a Technical Scrum Master. Take the PO's MVP scope and break it down into atomic, highly technical GitHub issues.",
+        "Act as a Technical Scrum Master / Architect. Take the Functional Analyst's behavioral requirements and break them down into atomic, highly technical GitHub issues.",
         BacklogEnvelope,
     )
 
-    # 2. PRODUCT ANALYSIS PHASE (Reviewer acting as PO)
+    # 1. PRODUCT ANALYSIS PHASE
     with workflow.lane("agent"):
         print("Running Product Owner Analysis...")
-        po_response = workflow.run_agent(
+        po_envelope = workflow.run_agent(
             product_owner, f"Epic Request: {epic_description}"
         )
-        po_envelope = po_response.data
 
-    # Note: In APF, schema validation happens natively via Pydantic in the agent call,
-    # but a formal code gate could check constraints (e.g. no more than 5 edge cases).
+    # 2. FUNCTIONAL ANALYSIS PHASE
+    with workflow.lane("agent"):
+        print("Running Functional Analyst Translation...")
+        fa_task = f"""
+        [ORIGINAL EPIC]
+        {epic_description}
+        
+        [MVP SCOPE FROM PO]
+        {po_envelope.recommended_mvp_scope}
+        
+        [IDENTIFIED EDGE CASES]
+        {", ".join(po_envelope.edge_cases)}
+        
+        Translate these business constraints into functional system behaviors.
+        """
+        fa_envelope = workflow.run_agent(functional_analyst, fa_task)
 
-    # 3. BREAKDOWN PHASE (Planner acting as Scrum Master)
+    # 3. BREAKDOWN PHASE
     with workflow.lane("agent"):
         print("Running Scrum Master Breakdown...")
         sm_task = f"""
-        Epic Context: {epic_description}
-        MVP Scope from PO: {po_envelope.recommended_mvp_scope}
-        Edge Cases to handle: {", ".join(po_envelope.edge_cases)}
+        [ORIGINAL EPIC]
+        {epic_description}
         
-        Generate the atomic issues.
+        [FUNCTIONAL BEHAVIORS TO IMPLEMENT]
+        User Flows: {", ".join(fa_envelope.user_flows)}
+        Error States: {", ".join(fa_envelope.error_states)}
+        Acceptance Criteria: {", ".join(fa_envelope.acceptance_criteria)}
+        
+        Generate the atomic issues necessary to build these behaviors.
         """
-        sm_response = workflow.run_agent(
+        backlog_envelope: BacklogEnvelope = workflow.run_agent(
             scrum_master, sm_task, skills=["epic_breakdown"]
         )
-        backlog_envelope: BacklogEnvelope = sm_response.data
 
     # 4. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
@@ -99,7 +127,7 @@ def run_epic_breakdown(epic_description: str, domain_context: str) -> None:
 
 if __name__ == "__main__":
     # Example execution
-    run_epic_breakdown(
+    run(
         epic_description="We need a new user authentication system that supports magic links via email and JWT tokens. It must be highly secure.",
         domain_context="You are in a FastAPI software engineering repository with a PostgreSQL database.",
     )
