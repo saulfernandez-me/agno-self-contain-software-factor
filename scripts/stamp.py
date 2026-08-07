@@ -101,7 +101,7 @@ Here is the template for AI.md you MUST follow:
 Output the content matching the Pydantic schema perfectly.
 """,
         output_schema=InceptionOutput,  # type: ignore[call-arg]
-        model=get_model("google:gemini-3.5-flash"),
+        model="google:gemini-3.5-flash", fallback_models=["google:gemini-2.5-flash", "deepseek:deepseek-chat"], # type: ignore[arg-type]
     )
 
     if is_brownfield:
