@@ -6,16 +6,15 @@ from src.agents.planner import get_planner_agent  # type: ignore[import-not-foun
 from src.agents.product_owner import (  # type: ignore[import-not-found]
     get_product_owner_agent,  # type: ignore[import-not-found]
 )
-
-from apf_core.assert_gates import run_shell_command
-from apf_core.workflow import ApfWorkflow
-
-from .envelopes import (
+from workflows.epic_to_issues.envelopes import (  # type: ignore[import-not-found]
     ArchitecturalDesignEnvelope,
     BacklogEnvelope,
     FunctionalRequirementsEnvelope,
     ProductAnalysisEnvelope,
 )
+
+from apf_core.assert_gates import run_shell_command
+from apf_core.workflow import ApfWorkflow
 
 
 def run(epic_description: str, domain_context: str, milestone_id: str = "") -> None:
