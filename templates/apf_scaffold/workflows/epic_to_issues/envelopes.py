@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from apf_core.envelopes import EnvelopeBase
@@ -46,7 +48,11 @@ class GithubIssueSchema(BaseModel):
 
     title: str = Field(
         ...,
-        description="The proposed issue title (e.g., 'feat: create auth endpoint').",
+        description="The proposed issue title without the type prefix.",
+    )
+    issue_type: Literal["feature", "bug", "task"] = Field(
+        ...,
+        description="The categorization of the issue. 'feature' for new value, 'bug' for fixes, 'task' for technical chores.",
     )
     description: str = Field(
         ...,
@@ -74,6 +80,10 @@ class BacklogEnvelope(EnvelopeBase):
     Output contract for the Breakdown phase (The Planner acting as Scrum Master).
     """
 
+    epic_title: str = Field(
+        ...,
+        description="A concise, 3-5 word title summarizing the overall business Epic.",
+    )
     issues: list[GithubIssueSchema] = Field(
         ..., description="The list of atomic GitHub Issues generated from the Epic."
     )

@@ -24,5 +24,10 @@ You must attach exact labels to each issue using the 4-tier taxonomy:
 - **Thematic**: Flexible semantic tags describing the feature (e.g., `jwt`, `api-gateway`, `ui-rework`).
 
 
+## Issue Typing & Epic Naming
+You must assign an `epic_title` (3-5 words max) that acts as the global Milestone name for this batch of work.
+For each atomic issue, classify its `issue_type` strictly as `feature`, `bug`, or `task`.
+
+
 ## Issue Formatting
 When writing the description for the GitHub Issue schema, you MUST strictly use the format mandated by `.github/ISSUE_TEMPLATE/apf-feature.md`. Include Scope, Architectural Requirements, Deliverables Checklist, and the exact Verification Command (e.g., `uv run pytest`).

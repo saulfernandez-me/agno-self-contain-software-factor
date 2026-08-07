@@ -84,6 +84,26 @@ def run(epic_description: str, domain_context: str) -> None:
 
     # 4. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
+        # Create GitHub Milestone
+        print(f"Creating Milestone '{backlog_envelope.epic_title}' in GitHub...")
+        _milestone_ok, _milestone_out, _milestone_err = run_shell_command(
+            f'gh api repos/{{owner}}/{{repo}}/milestones -f title="[Epic] {backlog_envelope.epic_title}" --jq ".number"'
+        )
+        # Note: In a real environment, we'd extract the actual owner/repo, but `gh` often resolves this automatically
+        # if we use `gh api repos/@owner/@repo/milestones`. Wait, `gh api` doesn't support @owner/@repo natively in all versions.
+        # It's safer to parse `gh repo view --json nameWithOwner --jq .nameWithOwner`.
+        _, repo_name, _ = run_shell_command(
+            "gh repo view --json nameWithOwner --jq .nameWithOwner"
+        )
+        if repo_name:
+            _milestone_ok, milestone_number, _milestone_err = run_shell_command(
+                f'gh api repos/{repo_name}/milestones -f title="[Epic] {backlog_envelope.epic_title}" --jq ".number"'
+            )
+        else:
+            milestone_number = ""
+
+        milestone_flag = f'--milestone "{milestone_number}"' if milestone_number else ""
+
         print(f"Creating {len(backlog_envelope.issues)} issues in GitHub...")
         success_count = 0
         for issue in backlog_envelope.issues:
@@ -106,10 +126,11 @@ def run(epic_description: str, domain_context: str) -> None:
                 run_shell_command(f'gh label create "{label}"')
 
             labels_flag = ",".join(all_labels)
+            issue_title = f"{issue.issue_type}: {issue.title}"
 
             # Fire the command
             ok, _stdout, stderr = run_shell_command(
-                f'gh issue create --title "{issue.title}" --body-file "{temp_path}" --label "{labels_flag}"'
+                f'gh issue create --title "{issue_title}" --body-file "{temp_path}" --label "{labels_flag}" {milestone_flag}'
             )
 
             # Clean up
