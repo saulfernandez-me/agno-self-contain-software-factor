@@ -29,5 +29,11 @@ You must assign an `epic_title` (3-5 words max) that acts as the global Mileston
 For each atomic issue, classify its `issue_type` strictly as `feature`, `bug`, or `task`.
 
 
-## Issue Formatting
-When writing the description for the GitHub Issue schema, you MUST strictly use the format mandated by `.github/ISSUE_TEMPLATE/apf-feature.md`. Include Scope, Architectural Requirements, Deliverables Checklist, and the exact Verification Command (e.g., `uv run pytest`).
+
+## High-Density Formatting
+Instead of a single vague description, you must meticulously fill out the structured Pydantic fields:
+1. **Context & Rationale**: Explain the architectural *Why*. Why is this issue needed? What decisions were made?
+2. **Technical Scope**: Exactly which files must be created or modified?
+3. **Implementation Steps**: A bulleted list instructing the Builder agent on how to write the code.
+4. **Definition of Done**: A checklist for completion.
+5. **Verification Command**: The bash command to run (e.g., `uv run pytest tests/test_name.py`).

@@ -111,8 +111,26 @@ def run(epic_description: str, domain_context: str) -> None:
             # Note: We save the body to a temp file to avoid bash escaping issues
             import tempfile
 
+            markdown_body = f"""### 📝 Context & Rationale
+{issue.context_and_rationale}
+
+### 🧬 Technical Scope
+{chr(10).join(f"- {f}" for f in issue.technical_scope)}
+
+### 🛠️ Implementation Steps
+{chr(10).join(f"- {step}" for step in issue.implementation_steps)}
+
+### ✅ Definition of Done
+{chr(10).join(f"- [ ] {dod}" for dod in issue.definition_of_done)}
+
+### 🧪 Verification Commands
+```bash
+{issue.verification_command}
+```
+"""
+
             with tempfile.NamedTemporaryFile("w", delete=False, suffix=".md") as f:
-                f.write(issue.description)
+                f.write(markdown_body)
                 temp_path = f.name
 
             # Create labels gracefully if they don't exist
