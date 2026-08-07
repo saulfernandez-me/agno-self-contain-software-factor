@@ -76,14 +76,29 @@ def run(epic_description: str, domain_context: str) -> None:
         Error States: {", ".join(fa_envelope.error_states)}
         Acceptance Criteria: {", ".join(fa_envelope.acceptance_criteria)}
         
-        Generate the atomic issues necessary to build these behaviors.
+        Generate the formal RFC document and the atomic issues.
         """
         backlog_envelope: BacklogEnvelope = workflow.run_agent(
-            scrum_master, sm_task, skills=["epic_breakdown"]
+            scrum_master, sm_task, skills=["epic_breakdown", "spec_driven"]
         )
 
     # 4. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
+        # Write RFC to disk
+        print(f"Writing RFC to {backlog_envelope.rfc_path}...")
+        import os
+        from pathlib import Path
+
+        rfc_path = Path(backlog_envelope.rfc_path)
+        rfc_path.parent.mkdir(parents=True, exist_ok=True)
+        rfc_path.write_text(backlog_envelope.rfc_content, encoding="utf-8")
+
+        # Git commit the RFC before creating issues
+        run_shell_command(f"git add {backlog_envelope.rfc_path}")
+        run_shell_command(
+            f'git commit -m "docs: add RFC for {backlog_envelope.epic_title}"'
+        )
+
         # Create GitHub Milestone
         print(f"Creating Milestone '{backlog_envelope.epic_title}' in GitHub...")
         _milestone_ok, _milestone_out, _milestone_err = run_shell_command(
@@ -111,14 +126,11 @@ def run(epic_description: str, domain_context: str) -> None:
             # Note: We save the body to a temp file to avoid bash escaping issues
             import tempfile
 
-            markdown_body = f"""### 📝 Context & Rationale
-{issue.context_and_rationale}
+            markdown_body = f"""### 📚 Context & Architecture
+Please read the Technical Specification in `{issue.rfc_pointer}` for context and logic before executing this ticket.
 
-### 🧬 Technical Scope
-{chr(10).join(f"- {f}" for f in issue.technical_scope)}
-
-### 🛠️ Implementation Steps
-{chr(10).join(f"- {step}" for step in issue.implementation_steps)}
+### 🛠️ Execution Task
+{chr(10).join(f"- {step}" for step in issue.execution_task)}
 
 ### ✅ Definition of Done
 {chr(10).join(f"- [ ] {dod}" for dod in issue.definition_of_done)}
@@ -152,7 +164,6 @@ def run(epic_description: str, domain_context: str) -> None:
             )
 
             # Clean up
-            import os
 
             os.remove(temp_path)
 

@@ -54,17 +54,13 @@ class GithubIssueSchema(BaseModel):
         ...,
         description="The categorization of the issue. 'feature' for new value, 'bug' for fixes, 'task' for technical chores.",
     )
-    context_and_rationale: str = Field(
+    rfc_pointer: str = Field(
         ...,
-        description="Deep business context. Why are we doing this? Why is this specific architectural approach the right one for this repository?",
+        description="The exact relative path to the physical RFC document (e.g., 'docs/rfcs/001-feature-name.md').",
     )
-    technical_scope: list[str] = Field(
+    execution_task: list[str] = Field(
         ...,
-        description="Explicit list of files, classes, or endpoints that must be modified or created.",
-    )
-    implementation_steps: list[str] = Field(
-        ...,
-        description="A highly detailed, step-by-step technical plan for the Builder agent to follow.",
+        description="A highly detailed, step-by-step technical plan for this specific atomic task.",
     )
     definition_of_done: list[str] = Field(
         ...,
@@ -93,12 +89,20 @@ class GithubIssueSchema(BaseModel):
 
 class BacklogEnvelope(EnvelopeBase):
     """
-    Output contract for the Breakdown phase (The Planner acting as Scrum Master).
+    Output contract for the Breakdown phase.
     """
 
     epic_title: str = Field(
         ...,
         description="A concise, 3-5 word title summarizing the overall business Epic.",
+    )
+    rfc_content: str = Field(
+        ...,
+        description="The full Markdown content of the Request for Comments (Tech Spec) document outlining the entire architecture and logic.",
+    )
+    rfc_path: str = Field(
+        ...,
+        description="The relative path where the RFC should be saved (e.g., 'docs/rfcs/001-feature-name.md').",
     )
     issues: list[GithubIssueSchema] = Field(
         ..., description="The list of atomic GitHub Issues generated from the Epic."

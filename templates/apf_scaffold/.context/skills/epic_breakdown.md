@@ -16,6 +16,10 @@ Do not just slice by "Frontend", "Backend", "Database". Slice by **Vertical Valu
 1. *Bad:* "Create the database tables."
 2. *Good:* "Implement the user login endpoint (includes DB model, API route, and auth logic)."
 
+## Spec-Driven Development
+Do NOT dump the entire architectural plan into the issue description. You must generate issues that act as pointers to a physical RFC document. Issues should only contain the specific execution task, the Definition of Done (DoD), and the Verification Command.
+
+
 ## Label Taxonomy
 You must attach exact labels to each issue using the 4-tier taxonomy:
 - **Lifecycle**: Must be `apf:backlog`.
