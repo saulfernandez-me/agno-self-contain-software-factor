@@ -122,7 +122,11 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
         )
 
     # We call the python runner. We assume the workflows folder exists in the target repo.
-    runner_script = Path("workflows/full_pdlc/runner.py")
+    runner_script = (
+        Path("workflows/epic_to_issues/runner.py")
+        if is_milestone
+        else Path("workflows/full_pdlc/runner.py")
+    )
     if not runner_script.exists():
         console.print(
             f"[red]❌ Workflow script not found at {runner_script}. Are you in an APF-stamped repository?[/red]"
@@ -188,9 +192,11 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
 
     # 4. Delivery (Commit, Push, PR)
     console.print("[cyan]📦 Workflow completed. Preparing delivery...[/cyan]")
-    
+
     if is_milestone:
-        console.print("[green]🎉 Milestone processed successfully. Backlog populated.[/green]")
+        console.print(
+            "[green]🎉 Milestone processed successfully. Backlog populated.[/green]"
+        )
         return
 
     run_cmd(
