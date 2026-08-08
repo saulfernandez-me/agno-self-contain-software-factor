@@ -248,8 +248,9 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
             ".defaultBranchRef.name",
         ]
     )
+    default_branch = "main"
     if repo_view_out:
-        repo_view_out.strip()
+        default_branch = repo_view_out.strip()
 
     console.print("[cyan]🔗 Creating Pull Request...[/cyan]")
     ok, pr_url, stderr = run_cmd(
@@ -262,7 +263,7 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
             "--body",
             f"Autonomous resolution of #{target_id} by APF agents.\n\nCloses #{target_id}",
             "--base",
-            "main",
+            default_branch,
         ]
     )
 

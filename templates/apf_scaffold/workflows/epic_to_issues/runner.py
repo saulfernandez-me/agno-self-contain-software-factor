@@ -155,7 +155,7 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
             else:
                 milestone_number = ""
 
-        milestone_flag = f'--milestone "{milestone_number}"' if milestone_number else ""
+        milestone_flag = f'--milestone "[Epic] {backlog_envelope.epic_title}"' if milestone_number else ""
 
         print(f"Creating {len(backlog_envelope.issues)} issues in GitHub...")
         success_count = 0
