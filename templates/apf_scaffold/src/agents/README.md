@@ -30,7 +30,7 @@ Their actual task instructions and domain knowledge are injected at runtime by t
 ## 🔍 4. Scout (`scout.py`)
 - **Role:** The Information Miner.
 - **Purpose:** Gathers deep context, reads logs, navigates repository structures, and searches the web to eliminate LLM hallucinations before tasks begin.
-- **Tools:** Read-only `WorkspaceTools`, `DuckDuckGoTools`.
+- **Tools:** Read-only `WorkspaceTools`, `BraveSearchTools`.
 - **Tier:** `lightweight`
 
 ## 🏗️ 5. Builder (`builder.py`)

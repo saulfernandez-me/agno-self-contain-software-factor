@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from agno.agent import Agent
-from agno.tools.duckduckgo import DuckDuckGoTools
+from agno.tools.bravesearch import BraveSearchTools
 from pydantic import BaseModel
 
 from apf_core.config import get_models_for_tier
@@ -34,7 +34,7 @@ def get_scout_agent(
         instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
         tools=[
             WorkspaceTools(restrict_to_cwd=True),
-            DuckDuckGoTools(),
+            BraveSearchTools(),
         ],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
