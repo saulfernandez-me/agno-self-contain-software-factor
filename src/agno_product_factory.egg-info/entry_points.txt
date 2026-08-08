@@ -1,0 +1,2 @@
+[console_scripts]
+apf = apf_core.cli:app
