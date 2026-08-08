@@ -131,6 +131,51 @@ def process(
     process_target(issue_number)
 
 
+@app.command("discover")
+def discover(
+    domain: str = typer.Argument(..., help="The target domain or area to research for new opportunities."),
+) -> None:
+    """Run the Product Discovery workflow to find new opportunities."""
+    from pathlib import Path
+    import sys
+    import importlib.util
+
+    console.print(f"[bold magenta]🚀 Starting APF Discovery for domain: {domain}...[/bold magenta]")
+    
+    runner_script = Path("workflows/product_discovery/runner.py")
+    if not runner_script.exists():
+        console.print(f"[red]❌ Workflow script not found at {runner_script}. Are you in an APF-stamped repository?[/red]")
+        sys.exit(1)
+
+    try:
+        cwd = str(Path.cwd())
+        if cwd not in sys.path:
+            sys.path.insert(0, cwd)
+
+        spec = importlib.util.spec_from_file_location("runner", str(runner_script))
+        if spec and spec.loader:
+            runner_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(runner_module)
+
+            ai_md_path = Path("AI.md")
+            domain_context = (
+                ai_md_path.read_text(encoding="utf-8")
+                if ai_md_path.exists()
+                else "Standard context"
+            )
+
+            if hasattr(runner_module, "run"):
+                run_func = runner_module.run
+                run_func(domain, domain_context)
+            else:
+                console.print("[red]❌ Could not find an entrypoint ('run' function) in the workflow script.[/red]")
+                sys.exit(1)
+
+    except Exception as e:
+        console.print(f"[red]❌ Discovery workflow execution failed: {e}[/red]")
+        sys.exit(1)
+
+
 @app.command("process-epic")
 def process_epic(
     milestone_id: int = typer.Argument(..., help="The GitHub Milestone ID to process as an Epic."),
