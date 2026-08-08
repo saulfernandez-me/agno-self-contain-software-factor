@@ -22,6 +22,10 @@ class ProductAnalysisEnvelope(EnvelopeBase):
         ...,
         description="The constrained, Minimum Viable Product scope recommended to build.",
     )
+    target_lifecycle_phase: Literal["MVP", "SCALE", "REFACTOR_TECH_DEBT"] = Field(
+        ...,
+        description="Determine the lifecycle phase based on the Epic's tags or intent.",
+    )
 
 
 class FunctionalRequirementsEnvelope(EnvelopeBase):
