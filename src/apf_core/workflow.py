@@ -71,7 +71,8 @@ class ApfWorkflow(Workflow):
         from pathlib import Path
 
         from agno.agent import Agent
-        from agno.models.utils import get_model
+
+        # from agno.models.utils import get_model
         from pydantic import BaseModel
 
         from apf_core.config import get_models_for_tier
@@ -156,7 +157,9 @@ class ApfWorkflow(Workflow):
         for model in models_to_try:
             try:
                 # Force the agent to use this specific model for this attempt
-                agent.model = get_model(model) if isinstance(model, str) else model
+                from apf_core.models import resolve_model
+
+                agent.model = resolve_model(model)
 
                 print(
                     f"[APF] Cognitive Phase: Running {agent.name} with model {getattr(agent.model, 'id', getattr(agent.model, 'name', str(model)))}..."
@@ -175,7 +178,9 @@ class ApfWorkflow(Workflow):
 
                 # STEP 2: Formatting Execution (Envelope Wrapper)
                 formatter_models = get_models_for_tier("lightweight")
-                formatter_model = get_model(formatter_models[0])
+                from apf_core.models import resolve_model
+
+                formatter_model = resolve_model(formatter_models[0])
 
                 print(
                     f"[APF] Formatting Phase: Extracting Envelope via {getattr(formatter_model, 'id', str(formatter_model))}..."
