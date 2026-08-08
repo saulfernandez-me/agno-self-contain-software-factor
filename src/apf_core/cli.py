@@ -134,6 +134,7 @@ def process(
 @app.command("discover")
 def discover(
     domain: str = typer.Argument(..., help="The target domain or area to research for new opportunities."),
+    topic: str = typer.Option("", help="Optional specific topic or focus area to direct the research."),
 ) -> None:
     """Run the Product Discovery workflow to find new opportunities."""
     from pathlib import Path
@@ -166,7 +167,13 @@ def discover(
 
             if hasattr(runner_module, "run"):
                 run_func = runner_module.run
-                run_func(domain, domain_context)
+                # Check if the run function accepts the topic argument
+                import inspect
+                sig = inspect.signature(run_func)
+                if "topic" in sig.parameters:
+                    run_func(target_domain=domain, domain_context=domain_context, topic=topic)
+                else:
+                    run_func(domain, domain_context)
             else:
                 console.print("[red]❌ Could not find an entrypoint ('run' function) in the workflow script.[/red]")
                 sys.exit(1)

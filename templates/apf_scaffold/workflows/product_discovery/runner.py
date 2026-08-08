@@ -12,7 +12,7 @@ from apf_core.assert_gates import run_shell_command
 from apf_core.workflow import ApfWorkflow
 
 
-def run(target_domain: str, domain_context: str) -> None:
+def run(target_domain: str, domain_context: str, topic: str = "") -> None:
     """
     Executes the Product Discovery workflow: Market Research -> UX Research -> Strategic Synthesis -> Opportunity Issues.
     """
@@ -39,7 +39,10 @@ def run(target_domain: str, domain_context: str) -> None:
     # 1. MARKET RESEARCH PHASE
     with workflow.lane("agent"):
         print("Running Market Researcher Analysis...")
-        market_task = f"Analyze the domain: {target_domain}. What are the macro opportunities and competitor gaps?"
+        if topic:
+            market_task = f"Analyze the domain: {target_domain} with a specific focus on: '{topic}'. What are the macro opportunities and competitor gaps?"
+        else:
+            market_task = f"Analyze the domain: {target_domain}. What are the macro opportunities and competitor gaps?"
         market_envelope: MarketResearchEnvelope = workflow.run_agent(market_researcher, market_task, skills=["web_access"])
 
     # 2. UX RESEARCH PHASE
