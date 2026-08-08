@@ -14,7 +14,7 @@ def resolve_model(model_ref: Any) -> Any:
     if not isinstance(model_ref, str):
         return model_ref
 
-    if model_ref.startswith("github:"):
+    if model_ref.startswith("github-copilot:"):
         model_id = model_ref.split(":", 1)[1]
 
         # Zero-Config Authentication: Extract the gh auth token
@@ -24,10 +24,10 @@ def resolve_model(model_ref: Any) -> Any:
             )
             if res.returncode != 0:
                 print(
-                    f"[red]❌ GitHub Models Authentication Failed: {res.stderr}[/red]"
+                    f"[red]❌ GitHub Copilot Authentication Failed: {res.stderr}[/red]"
                 )
                 print(
-                    "[yellow]Please run `gh auth login` to use the 'github:' provider.[/yellow]"
+                    "[yellow]Please run `gh auth login` to use the 'github-copilot:' provider.[/yellow]"
                 )
                 sys.exit(1)
 
@@ -38,11 +38,11 @@ def resolve_model(model_ref: Any) -> Any:
             return OpenAIChat(
                 id=model_id,
                 api_key=gh_token,
-                base_url="https://models.inference.ai.azure.com",
+                base_url="https://api.individual.githubcopilot.com",
             )
         except OSError:
             print(
-                "[red]❌ 'gh' CLI not found. Cannot use 'github:' models without it.[/red]"
+                "[red]❌ 'gh' CLI not found. Cannot use 'github-copilot:' models without it.[/red]"
             )
             sys.exit(1)
 

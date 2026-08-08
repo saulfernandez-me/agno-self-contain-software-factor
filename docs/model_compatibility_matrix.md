@@ -14,7 +14,7 @@ The prober evaluates two critical capabilities:
 |----------|----------|--------------------|--------------|----------------|
 | `google` | `gemini-2.5-flash` | ✅ | ✅ | 🟢 VALIDATED |
 | `google` | `gemini-3.5-flash` | ✅ | ✅ | 🟢 VALIDATED |
-| `google` | `gemini-2.5-pro` | ✅ | ❌ | 🔴 FAILED |
+| `google` | `gemini-2.5-pro` | ✅ | ✅ | 🟢 VALIDATED |
 | `google` | `gemini-3.1-pro-preview` | ✅ | ✅ | 🟢 VALIDATED |
 | `deepseek` | `deepseek-chat` | ✅ | ✅ | 🟢 VALIDATED |
 | `deepseek` | `deepseek-reasoner` | ✅ | ✅ | 🟢 VALIDATED |
@@ -22,7 +22,6 @@ The prober evaluates two critical capabilities:
 | `anthropic` | `claude-fable-5` | ✅ | ✅ | 🟢 VALIDATED |
 | `anthropic` | `claude-sonnet-5` | ✅ | ✅ | 🟢 VALIDATED |
 | `anthropic` | `claude-opus-5` | ✅ | ✅ | 🟢 VALIDATED |
-| `github` | `gpt-4o` | ❌ | ❌ | 🔴 FAILED |
-| `github` | `gpt-4o-mini` | ❌ | ❌ | 🔴 FAILED |
-| `github` | `o1-mini` | ❌ | ❌ | 🔴 FAILED |
-| `github` | `o3-mini` | ❌ | ❌ | 🔴 FAILED |
+| `github-copilot` | `gpt-5.6-sol` | ❌ | ❌ | 🔴 FAILED |
+| `github-copilot` | `gpt-5.6-terra` | ❌ | ❌ | 🔴 FAILED |
+| `github-copilot` | `gpt-5.6-luna` | ❌ | ❌ | 🔴 FAILED |

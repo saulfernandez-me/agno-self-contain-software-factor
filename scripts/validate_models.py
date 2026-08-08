@@ -31,11 +31,10 @@ CANDIDATES = {
         "claude-sonnet-5",
         "claude-opus-5",
     ],
-    "github": [
-        "gpt-4o",
-        "gpt-4o-mini",
-        "o1-mini",
-        "o3-mini"
+    "github-copilot": [
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-5.6-luna"
     ]
 }
 
