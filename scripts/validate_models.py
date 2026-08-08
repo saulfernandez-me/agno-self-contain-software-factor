@@ -57,8 +57,8 @@ def test_tool_calling(model_id: str) -> bool:
             model=Gemini(id=model_id),
             tools=[get_system_status]
         )
-        # Ask something that explicitly requires the tool
-        response = agent.run("What is the status of the database service? You MUST use the get_system_status tool to find out.")
+        # Ask something that explicitly requires the tool and is completely unambiguous
+        response = agent.run("Tell me ONLY the status of the 'database' service using the available tool. Do not ask for clarifications.")
         
         if response.content and "online" in str(response.content).lower():
             return True
