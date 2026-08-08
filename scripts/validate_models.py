@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.models.deepseek import DeepSeek
+from agno.models.anthropic import Claude
 
 # Model candidate lists to test per provider
 CANDIDATES = {
@@ -20,6 +21,12 @@ CANDIDATES = {
     "deepseek": [
         "deepseek-chat",     # DeepSeek-V3
         "deepseek-reasoner", # DeepSeek-R1
+    ],
+    "anthropic": [
+        "claude-haiku-4-5-20251001",
+        "claude-fable-5",
+        "claude-sonnet-5",
+        "claude-opus-5",
     ]
 }
 
@@ -28,6 +35,8 @@ def get_model_instance(provider: str, model_id: str):
         return Gemini(id=model_id)
     elif provider == "deepseek":
         return DeepSeek(id=model_id)
+    elif provider == "anthropic":
+        return Claude(id=model_id)
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
@@ -107,7 +116,7 @@ def generate_report(results: Dict[str, Dict[str, bool]]) -> str:
     md += "This document tracks the validation status of various LLMs against required Agno features.\n\n"
     md += "## Validation Methodology\n"
     md += "Models are validated via an automated probing script (`scripts/validate_models.py`) that executes real requests against the provider's API. "
-    md += "The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini and DeepSeek) through the Agno framework.\n\n"
+    md += "The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini, DeepSeek, and Anthropic) through the Agno framework.\n\n"
     md += "The prober evaluates two critical capabilities:\n"
     md += "- **Structured Outputs:** The model is forced to return a response conforming strictly to a predefined Pydantic schema. If the model hallucinations or fails to use the API's native JSON mode, the test fails.\n"
     md += "- **Tool Calling:** The model is provided with a dummy tool and prompted with strict, unambiguous instructions to invoke it. This verifies its determinism for non-interactive execution (avoiding models that pause workflows to ask conversational questions).\n\n"
@@ -131,6 +140,8 @@ def main():
         print("WARNING: GOOGLE_API_KEY environment variable not set. Gemini tests may fail.")
     if not os.environ.get("DEEPSEEK_API_KEY"):
         print("WARNING: DEEPSEEK_API_KEY environment variable not set. DeepSeek tests may fail.")
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print("WARNING: ANTHROPIC_API_KEY environment variable not set. Anthropic tests may fail.")
         
     results = {}
     

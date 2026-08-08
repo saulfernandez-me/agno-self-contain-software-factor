@@ -17,6 +17,7 @@ dependencies = [
     "duckduckgo-search>=6.0.0",
     "pyyaml>=6.0.3",
     "pydantic-settings>=2.14.2",
+    "anthropic>=0.121.0",
 ]
 
 [project.scripts]
