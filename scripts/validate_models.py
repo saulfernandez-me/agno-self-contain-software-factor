@@ -76,6 +76,13 @@ def test_tool_calling(model_id: str) -> bool:
 def generate_report(results: Dict[str, Dict[str, bool]]) -> str:
     md = "# Model Compatibility Matrix\n\n"
     md += "This document tracks the validation status of various LLMs against required Agno features.\n\n"
+    md += "## Validation Methodology\n"
+    md += "Models are validated via an automated probing script (`scripts/validate_models.py`) that executes real requests against the provider's API. "
+    md += "The validation uses a valid API Key (injected securely via CI/CD environments as `GOOGLE_API_KEY`) and connects to the official Google Gemini API endpoints through the Agno framework (`agno.models.google.Gemini`).\n\n"
+    md += "The prober evaluates two critical capabilities:\n"
+    md += "- **Structured Outputs:** The model is forced to return a response conforming strictly to a predefined Pydantic schema. If the model hallucinations or fails to use the API's native JSON mode, the test fails.\n"
+    md += "- **Tool Calling:** The model is provided with a dummy tool and prompted with strict, unambiguous instructions to invoke it. This verifies its determinism for non-interactive execution (avoiding models that pause workflows to ask conversational questions).\n\n"
+    md += "## Supported Models\n"
     md += "| Model ID | Structured Outputs | Tool Calling | Overall Status |\n"
     md += "|----------|--------------------|--------------|----------------|\n"
     
