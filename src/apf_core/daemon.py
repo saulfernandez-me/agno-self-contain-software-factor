@@ -141,6 +141,12 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
     try:
         # Dynamically import the runner module
         import importlib.util
+        import sys
+
+        # Add current working directory to sys.path so 'src' can be imported
+        cwd = str(Path.cwd())
+        if cwd not in sys.path:
+            sys.path.insert(0, cwd)
 
         spec = importlib.util.spec_from_file_location("runner", str(runner_script))
         if spec and spec.loader:
