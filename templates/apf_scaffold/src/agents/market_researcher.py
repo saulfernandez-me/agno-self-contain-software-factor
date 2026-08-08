@@ -5,7 +5,7 @@ from agno.agent import Agent
 from pydantic import BaseModel
 
 from apf_core.config import get_models_for_tier
-from agno.tools.duckduckgo import DuckDuckGoTools
+from agno.tools.bravesearch import BraveSearchTools
 
 def get_market_researcher_agent(
     domain_context: str,
@@ -29,7 +29,7 @@ def get_market_researcher_agent(
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description=behavioral_harness,
         instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
-        tools=[DuckDuckGoTools()],
+        tools=[BraveSearchTools()],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
         tool_call_limit=10,
