@@ -63,8 +63,8 @@ def get_models_for_tier(tier_name: str, config: ApfConfig | None = None) -> list
 
     # Hardcoded safety nets if the YAML is missing tier definitions
     if tier_name == "heavy":
-        return ["google:gemini-3.1-pro-preview", "deepseek:deepseek-reasoner", "anthropic:claude-sonnet-5"]
+        return ["google:gemini-3.1-pro-preview", "deepseek:deepseek-reasoner", "anthropic:claude-opus-5"]
     elif tier_name == "workhorse":
-        return ["google:gemini-3.5-flash", "deepseek:deepseek-chat", "anthropic:claude-haiku-4-5-20251001"]
+        return ["google:gemini-3.5-flash", "deepseek:deepseek-chat", "anthropic:claude-sonnet-5"]
     else:  # lightweight or unknown
         return ["google:gemini-2.5-flash", "deepseek:deepseek-chat", "anthropic:claude-fable-5"]
