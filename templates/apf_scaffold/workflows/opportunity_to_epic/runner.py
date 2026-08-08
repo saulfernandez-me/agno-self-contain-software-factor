@@ -129,11 +129,21 @@ def run(opportunity_description: str, domain_context: str, issue_id: str = "") -
         
         if repo_name:
             print(f"Creating Epic Milestone '{epic_milestone_title}' in GitHub...")
+            # We inject the epic markdown content directly into the milestone description using a temp file
+            import tempfile
+            with tempfile.NamedTemporaryFile("w", delete=False, suffix=".md") as f_desc:
+                # We can also just read the written file
+                f_desc.write(Path(sm_envelope.epic_markdown_path).read_text(encoding="utf-8"))
+                temp_desc_path = f_desc.name
+
             _milestone_ok, milestone_number_raw, _milestone_err = run_shell_command(
-                f'gh api repos/{repo_name}/milestones -f title="{epic_milestone_title}" --jq ".number"'
+                f'gh api repos/{repo_name}/milestones -f title="{epic_milestone_title}" -F description=@{temp_desc_path} --jq ".number"'
             )
             milestone_id_new = milestone_number_raw.strip() if milestone_number_raw else ""
             print(f"Created Epic Milestone ID: {milestone_id_new}")
+            
+            import os
+            os.remove(temp_desc_path)
 
         if issue_id:
             # We transform the original opportunity issue into a milestone/epic anchor
@@ -144,6 +154,9 @@ def run(opportunity_description: str, domain_context: str, issue_id: str = "") -
             run_shell_command(f'gh issue edit {issue_id} --title "{epic_milestone_title}"')
             if milestone_id_new:
                 run_shell_command(f'gh issue edit {issue_id} -m "{epic_milestone_title}"')
+            
+            print(f"Closing Original Opportunity Issue #{issue_id} as it is now converted into an Epic...")
+            run_shell_command(f"gh issue close {issue_id} --reason completed")
         
     with workflow.lane("engineer"):
         print("Strategic distillation complete. The Opportunity is now an Epic ready for breakdown.")
