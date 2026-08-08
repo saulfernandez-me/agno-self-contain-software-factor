@@ -47,13 +47,9 @@ class ArchitecturalDesignEnvelope(EnvelopeBase):
     """
     Output contract for the Software Architect.
     """
-    rfc_content: str = Field(
-        ...,
-        description="The full Markdown content of the Request for Comments (Tech Spec) document outlining the entire architecture and logic.",
-    )
     rfc_path: str = Field(
         ...,
-        description="The relative path where the RFC should be saved (e.g., 'docs/rfcs/001-feature-name.md').",
+        description="The relative path where the RFC was saved (e.g., 'docs/rfcs/001-feature-name.md'). YOU MUST save the RFC to disk using the save_artifact tool before completing this envelope.",
     )
     implementation_breakdown: list[str] = Field(
         ...,

@@ -225,6 +225,24 @@ class ApfWorkflow(Workflow):
                             output = expected_schema.model_validate(parsed_json)
                     except Exception as parse_e:  # noqa: BLE001
                         print(f"[APF] Manual JSON parsing failed: {parse_e}")
+                        print("[APF] Attempting to heal JSON with fallback model...")
+                        try:
+                            healer = Agent(
+                                name="JSON Healer",
+                                model=formatter_model,
+                                description="You are a JSON fixer. Take the broken/truncated JSON string and output a fixed, well-formed JSON string. Add missing closing brackets/braces/quotes. Output ONLY raw, valid JSON. NEVER use markdown formatting.",
+                            )
+                            heal_prompt = f"Fix and close this truncated/broken JSON structure. Ensure all keys and values are valid. Output ONLY JSON:\n\n{content}"
+                            heal_resp = healer.run(heal_prompt)
+                            healed_content = getattr(heal_resp, "content", str(heal_resp)).strip()
+                            healed_content = healed_content.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+                            
+                            parsed_json = json.loads(healed_content)
+                            if expected_schema:
+                                output = expected_schema.model_validate(parsed_json)
+                                print("[APF] Successfully healed JSON!")
+                        except Exception as heal_e:
+                            print(f"[APF] JSON healing failed: {heal_e}")
 
                 if output is not None:
                     agent.output_schema = expected_schema  # Restore
