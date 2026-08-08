@@ -121,12 +121,13 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
             ]
         )
 
+    is_epic_issue = not is_milestone and ("[epic]" in title.lower())
+
     # We call the python runner. We assume the workflows folder exists in the target repo.
-    runner_script = (
-        Path("workflows/epic_to_issues/runner.py")
-        if is_milestone
-        else Path("workflows/full_pdlc/runner.py")
-    )
+    if is_milestone or is_epic_issue:
+        runner_script = Path("workflows/epic_to_issues/runner.py")
+    else:
+        runner_script = Path("workflows/full_pdlc/runner.py")
     if not runner_script.exists():
         console.print(
             f"[red]❌ Workflow script not found at {runner_script}. Are you in an APF-stamped repository?[/red]"
