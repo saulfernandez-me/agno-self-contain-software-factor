@@ -109,7 +109,7 @@ def run(target_domain: str, domain_context: str, topic: str = "") -> None:
                 )
                 milestone_number = milestone_number_raw.strip() if milestone_number_raw else ""
                 
-        milestone_flag = f'--milestone "{milestone_number}"' if milestone_number else ""
+        milestone_flag = f'--milestone "{milestone_title}"' if milestone_number else ""
 
         print(f"Creating {len(discovery_envelope.opportunities)} opportunity issues in GitHub...")
         success_count = 0
