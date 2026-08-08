@@ -61,6 +61,9 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
         [ORIGINAL EPIC]
         {epic_description}
         
+        [LIFECYCLE PHASE DECREED BY PO]
+        {po_envelope.target_lifecycle_phase}
+        
         [MVP SCOPE FROM PO]
         {po_envelope.recommended_mvp_scope}
         
@@ -78,6 +81,9 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
         [ORIGINAL EPIC]
         {epic_description}
         
+        [LIFECYCLE PHASE DECREED BY PO]
+        {po_envelope.target_lifecycle_phase}
+        
         [FUNCTIONAL BEHAVIORS TO IMPLEMENT]
         User Flows: {", ".join(fa_envelope.user_flows)}
         Error States: {", ".join(fa_envelope.error_states)}
@@ -93,6 +99,9 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
     with workflow.lane("agent"):
         print("Running Scrum Master Breakdown...")
         sm_task = f"""
+        [LIFECYCLE PHASE DECREED BY PO]
+        {po_envelope.target_lifecycle_phase}
+        
         [ARCHITECTURAL DESIGN & MODULES TO BUILD]
         {", ".join(arch_envelope.implementation_breakdown)}
         
