@@ -3,7 +3,7 @@
 This document tracks the validation status of various LLMs against required Agno features.
 
 ## Validation Methodology
-Models are validated via an automated probing script (`scripts/validate_models.py`) that executes real requests against the provider's API. The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini, DeepSeek, and Anthropic) through the Agno framework.
+Models are validated via an automated probing script (`scripts/validate_models.py`) that executes real requests against the provider's API. The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini, DeepSeek, Anthropic, and GitHub Models) through the Agno framework.
 
 The prober evaluates two critical capabilities:
 - **Structured Outputs:** The model is forced to return a response conforming strictly to a predefined Pydantic schema. If the model hallucinations or fails to use the API's native JSON mode, the test fails.
@@ -14,7 +14,7 @@ The prober evaluates two critical capabilities:
 |----------|----------|--------------------|--------------|----------------|
 | `google` | `gemini-2.5-flash` | ✅ | ✅ | 🟢 VALIDATED |
 | `google` | `gemini-3.5-flash` | ✅ | ✅ | 🟢 VALIDATED |
-| `google` | `gemini-2.5-pro` | ✅ | ❌ | 🔴 FAILED |
+| `google` | `gemini-2.5-pro` | ✅ | ✅ | 🟢 VALIDATED |
 | `google` | `gemini-3.1-pro-preview` | ✅ | ✅ | 🟢 VALIDATED |
 | `deepseek` | `deepseek-chat` | ✅ | ✅ | 🟢 VALIDATED |
 | `deepseek` | `deepseek-reasoner` | ✅ | ✅ | 🟢 VALIDATED |
@@ -22,3 +22,6 @@ The prober evaluates two critical capabilities:
 | `anthropic` | `claude-fable-5` | ✅ | ✅ | 🟢 VALIDATED |
 | `anthropic` | `claude-sonnet-5` | ✅ | ✅ | 🟢 VALIDATED |
 | `anthropic` | `claude-opus-5` | ✅ | ✅ | 🟢 VALIDATED |
+| `github-copilot` | `gpt-5.6-sol` | ❌ | ❌ | 🔴 FAILED |
+| `github-copilot` | `gpt-5.6-terra` | ❌ | ❌ | 🔴 FAILED |
+| `github-copilot` | `gpt-5.6-luna` | ❌ | ❌ | 🔴 FAILED |
