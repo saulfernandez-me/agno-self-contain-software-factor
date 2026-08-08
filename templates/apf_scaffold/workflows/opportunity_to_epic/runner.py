@@ -115,6 +115,16 @@ def run(opportunity_description: str, domain_context: str, issue_id: str = "") -
 
     # 5. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
+        from pathlib import Path
+        
+        if issue_id:
+            # Append lineage tracking to the physical Epic document
+            epic_file = Path(sm_envelope.epic_markdown_path)
+            if epic_file.exists():
+                content = epic_file.read_text(encoding="utf-8")
+                lineage_footer = f"\n\n---\n🔗 *Origin: Derived from Opportunity Issue #{issue_id}*\n"
+                epic_file.write_text(content + lineage_footer, encoding="utf-8")
+
         print(f"Epic document saved to {sm_envelope.epic_markdown_path}")
         
         run_shell_command(f"git add {sm_envelope.epic_markdown_path}")
@@ -131,7 +141,6 @@ def run(opportunity_description: str, domain_context: str, issue_id: str = "") -
             print(f"Creating Epic Milestone '{epic_milestone_title}' in GitHub...")
             # We inject the epic markdown content directly into the milestone description using a temp file
             import tempfile
-            from pathlib import Path
             with tempfile.NamedTemporaryFile("w", delete=False, suffix=".md") as f_desc:
                 # We can also just read the written file
                 f_desc.write(Path(sm_envelope.epic_markdown_path).read_text(encoding="utf-8"))
