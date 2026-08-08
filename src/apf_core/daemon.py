@@ -122,9 +122,12 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
         )
 
     is_epic_issue = not is_milestone and ("[epic]" in title.lower())
+    is_approved_opportunity = not is_milestone and ("apf:approved" in labels)
 
     # We call the python runner. We assume the workflows folder exists in the target repo.
-    if is_milestone or is_epic_issue:
+    if is_approved_opportunity:
+        runner_script = Path("workflows/opportunity_to_epic/runner.py")
+    elif is_milestone or is_epic_issue:
         runner_script = Path("workflows/epic_to_issues/runner.py")
     else:
         runner_script = Path("workflows/full_pdlc/runner.py")
@@ -169,7 +172,14 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
             # Since the component-based refactor, the entrypoint is simply 'run'
             if hasattr(runner_module, "run"):
                 run_func = runner_module.run
-                run_func(task_instruction, domain_context)
+                import inspect
+                sig = inspect.signature(run_func)
+                kwargs = {}
+                if "issue_id" in sig.parameters:
+                    kwargs["issue_id"] = str(target_id)
+                elif "milestone_id" in sig.parameters:
+                    kwargs["milestone_id"] = str(target_id)
+                run_func(task_instruction, domain_context, **kwargs)
             else:
                 # Fallback for older flat scripts
                 run_func = None
@@ -182,7 +192,14 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
                         break
 
                 if run_func:
-                    run_func(task_instruction, domain_context)
+                    import inspect
+                    sig = inspect.signature(run_func)
+                    kwargs = {}
+                    if "issue_id" in sig.parameters:
+                        kwargs["issue_id"] = str(target_id)
+                    elif "milestone_id" in sig.parameters:
+                        kwargs["milestone_id"] = str(target_id)
+                    run_func(task_instruction, domain_context, **kwargs)
                 else:
                     console.print(
                         "[red]❌ Could not find an entrypoint ('run' function) in the workflow script.[/red]"
