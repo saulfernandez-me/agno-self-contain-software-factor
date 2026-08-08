@@ -27,6 +27,7 @@ def get_architect_agent(
     read_only_tools = WorkspaceTools(restrict_to_cwd=True)
     if "write_file" in read_only_tools.functions:
         del read_only_tools.functions["write_file"]
+    # Architect is allowed to save artifacts (RFCs) but not arbitrary code files via write_file.
 
     return Agent(
         name="Architect",

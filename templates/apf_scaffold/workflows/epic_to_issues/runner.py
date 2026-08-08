@@ -83,7 +83,7 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
         Error States: {", ".join(fa_envelope.error_states)}
         Acceptance Criteria: {", ".join(fa_envelope.acceptance_criteria)}
         
-        Design the technical architecture and generate the formal RFC document.
+        Design the technical architecture. IMPORTANT: You MUST use the `save_artifact` tool to save the formal RFC document to disk (e.g., in `docs/rfcs/`). Do NOT include the full RFC text in your final response summary.
         """
         arch_envelope: ArchitecturalDesignEnvelope = workflow.run_agent(
             architect, arch_task, skills=["spec_driven"]
@@ -107,14 +107,8 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
 
     # 5. EXECUTION PHASE (GitHub API Injection)
     with workflow.lane("code"):
-        # Write RFC to disk
-        print(f"Writing RFC to {arch_envelope.rfc_path}...")
-        import os
-        from pathlib import Path
-
-        rfc_path = Path(arch_envelope.rfc_path)
-        rfc_path.parent.mkdir(parents=True, exist_ok=True)
-        rfc_path.write_text(arch_envelope.rfc_content, encoding="utf-8")
+        # The RFC is already saved to disk by the Architect agent using save_artifact
+        print(f"RFC should be available at {arch_envelope.rfc_path}")
 
         # Git commit the RFC before creating issues
         run_shell_command(f"git add {arch_envelope.rfc_path}")

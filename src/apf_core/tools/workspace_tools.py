@@ -20,6 +20,7 @@ class WorkspaceTools(Toolkit):
         self.register(self.read_file_snippet)
         self.register(self.search_keyword)
         self.register(self.write_file)
+        self.register(self.save_artifact)
 
     def _is_safe_path(self, target_path: str) -> bool:
         if not self.restrict_to_cwd:
@@ -128,6 +129,29 @@ class WorkspaceTools(Toolkit):
             return f"Successfully wrote to {path}"
         except OSError as e:
             return f"Error writing file: {e!s}"
+
+    def save_artifact(self, path: str, content: str) -> str:
+        """
+        Saves a generated artifact (like an RFC or markdown document) to the workspace.
+        This must be used instead of returning massive strings in the final response.
+
+        Args:
+            path: The file path to save to (e.g. 'docs/rfcs/006-feature.md').
+            content: The entire text content of the artifact.
+
+        Returns:
+            Success or error message.
+        """
+        if not self._is_safe_path(path):
+            return "Error: Path is outside the restricted working directory."
+
+        target = Path(path)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding="utf-8")
+            return f"Successfully saved artifact to {path}"
+        except OSError as e:
+            return f"Error saving artifact: {e!s}"
 
     def search_keyword(self, keyword: str, path: str = ".") -> str:
         """
