@@ -30,13 +30,17 @@ def get_planner_agent(
     # It must NEVER write code.
     # Safely remove the write_file method from this specific instance's toolkit
 
+    read_only_tools = WorkspaceTools(restrict_to_cwd=True)
+    if "write_file" in read_only_tools.functions:
+        del read_only_tools.functions["write_file"]
+
     return Agent(
         name="Planner",
         model=get_models_for_tier(model_tier)[0],
         fallback_models=get_models_for_tier(model_tier)[1:],  # type: ignore[arg-type]
         description=behavioral_harness,
         instructions=f"[DOMAIN CONTEXT & INVARIANTS]\n{domain_context}\n\n[TASK INSTRUCTIONS]\n{task_instructions}",
-        tools=[],
+        tools=[read_only_tools],
         output_schema=output_schema,  # type: ignore[call-arg]
         add_history_to_context=True,  # type: ignore[call-arg]
         tool_call_limit=5,

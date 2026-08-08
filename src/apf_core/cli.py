@@ -167,13 +167,15 @@ def discover(
 
             if hasattr(runner_module, "run"):
                 run_func = runner_module.run
-                # Check if the run function accepts the topic argument
+                
+                # In python 3.10 signature check can be done via inspect
                 import inspect
                 sig = inspect.signature(run_func)
+                kwargs = {}
                 if "topic" in sig.parameters:
-                    run_func(target_domain=domain, domain_context=domain_context, topic=topic)
-                else:
-                    run_func(domain, domain_context)
+                    kwargs["topic"] = topic
+                
+                run_func(target_domain=domain, domain_context=domain_context, **kwargs)
             else:
                 console.print("[red]❌ Could not find an entrypoint ('run' function) in the workflow script.[/red]")
                 sys.exit(1)
