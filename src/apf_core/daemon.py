@@ -121,12 +121,13 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
             ]
         )
 
+    is_epic_issue = not is_milestone and ("[epic]" in title.lower())
+
     # We call the python runner. We assume the workflows folder exists in the target repo.
-    runner_script = (
-        Path("workflows/epic_to_issues/runner.py")
-        if is_milestone
-        else Path("workflows/full_pdlc/runner.py")
-    )
+    if is_milestone or is_epic_issue:
+        runner_script = Path("workflows/epic_to_issues/runner.py")
+    else:
+        runner_script = Path("workflows/full_pdlc/runner.py")
     if not runner_script.exists():
         console.print(
             f"[red]❌ Workflow script not found at {runner_script}. Are you in an APF-stamped repository?[/red]"
@@ -140,6 +141,12 @@ def process_target(target_id: int, is_milestone: bool = False) -> None:
     try:
         # Dynamically import the runner module
         import importlib.util
+        import sys
+
+        # Add current working directory to sys.path so 'src' can be imported
+        cwd = str(Path.cwd())
+        if cwd not in sys.path:
+            sys.path.insert(0, cwd)
 
         spec = importlib.util.spec_from_file_location("runner", str(runner_script))
         if spec and spec.loader:

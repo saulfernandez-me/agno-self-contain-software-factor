@@ -123,6 +123,7 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
         )
 
         # Handle GitHub Milestone
+        repo_name = ""
         if milestone_id:
             # We already have a milestone created by the human
             print(f"Using existing Milestone ID: {milestone_id}")
@@ -133,10 +134,10 @@ def run(epic_description: str, domain_context: str, milestone_id: str = "") -> N
                 "gh repo view --json nameWithOwner --jq .nameWithOwner"
             )
             repo_name = repo_name_raw.strip() if repo_name_raw else ""
-        if repo_name:
-            run_shell_command(
-                f'gh api -X PATCH repos/{repo_name}/milestones/{milestone_id} -f title="[Epic] {backlog_envelope.epic_title}"'
-            )
+            if repo_name:
+                run_shell_command(
+                    f'gh api -X PATCH repos/{repo_name}/milestones/{milestone_id} -f title="[Epic] {backlog_envelope.epic_title}"'
+                )
         else:
             # Create a new milestone if running standalone
             print(f"Creating Milestone '{backlog_envelope.epic_title}' in GitHub...")
