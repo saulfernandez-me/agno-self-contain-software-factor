@@ -1,14 +1,17 @@
 import os
 import sys
 import json
+import uuid
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 from pydantic import BaseModel, Field
 from agno.agent import Agent
-from agno.models.google import Gemini
-from agno.models.deepseek import DeepSeek
-from agno.models.anthropic import Claude
+
+# Update the import to use APF's own resolve_model
+# Ensure src is in PYTHONPATH if not running via module
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from apf_core.models import resolve_model
 
 # Model candidate lists to test per provider
 CANDIDATES = {
@@ -27,26 +30,24 @@ CANDIDATES = {
         "claude-fable-5",
         "claude-sonnet-5",
         "claude-opus-5",
+    ],
+    "github": [
+        "gpt-4o",
+        "gpt-4o-mini",
+        "o1-mini",
+        "o3-mini"
     ]
 }
 
 def get_model_instance(provider: str, model_id: str):
-    if provider == "google":
-        return Gemini(id=model_id)
-    elif provider == "deepseek":
-        return DeepSeek(id=model_id)
-    elif provider == "anthropic":
-        return Claude(id=model_id)
-    else:
-        raise ValueError(f"Unknown provider: {provider}")
+    # Use APF's native resolver to faithfully replicate production execution
+    return resolve_model(f"{provider}:{model_id}")
 
 # Pydantic model for Structured Output test
 class ValidationResult(BaseModel):
     is_valid: bool = Field(description="Whether the data provided is valid")
     confidence: float = Field(description="Confidence score between 0.0 and 1.0")
     reasoning: str = Field(description="Explanation of the validation")
-
-import uuid
 
 # Dummy tool for Tool Calling test
 TEST_STATUS = f"status_{uuid.uuid4().hex[:8]}"
@@ -116,7 +117,7 @@ def generate_report(results: Dict[str, Dict[str, bool]]) -> str:
     md += "This document tracks the validation status of various LLMs against required Agno features.\n\n"
     md += "## Validation Methodology\n"
     md += "Models are validated via an automated probing script (`scripts/validate_models.py`) that executes real requests against the provider's API. "
-    md += "The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini, DeepSeek, and Anthropic) through the Agno framework.\n\n"
+    md += "The validation uses valid API Keys (injected securely via CI/CD environments) and connects to the official provider endpoints (Google Gemini, DeepSeek, Anthropic, and GitHub Models) through the Agno framework.\n\n"
     md += "The prober evaluates two critical capabilities:\n"
     md += "- **Structured Outputs:** The model is forced to return a response conforming strictly to a predefined Pydantic schema. If the model hallucinations or fails to use the API's native JSON mode, the test fails.\n"
     md += "- **Tool Calling:** The model is provided with a dummy tool and prompted with strict, unambiguous instructions to invoke it. This verifies its determinism for non-interactive execution (avoiding models that pause workflows to ask conversational questions).\n\n"
@@ -142,6 +143,8 @@ def main():
         print("WARNING: DEEPSEEK_API_KEY environment variable not set. DeepSeek tests may fail.")
     if not os.environ.get("ANTHROPIC_API_KEY"):
         print("WARNING: ANTHROPIC_API_KEY environment variable not set. Anthropic tests may fail.")
+    if not os.environ.get("GITHUB_TOKEN"):
+        print("WARNING: GITHUB_TOKEN environment variable not set. GitHub Models tests may fail.")
         
     results = {}
     
